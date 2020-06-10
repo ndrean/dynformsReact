@@ -73,7 +73,6 @@ export default function Downwind() {
               <input
                 type="text"
                 name={nameId}
-                data-id={id}
                 id={nameId}
                 className="name"
                 value={kiter.name}
@@ -87,10 +86,9 @@ export default function Downwind() {
               <input
                 type="text"
                 name={contactId}
-                data-id={id}
                 id={contactId}
                 className="age"
-                value={kiters[id].contact}
+                value={kiter.contact}
                 onChange={(e) => {
                   [...kiters][id].contact = e.target.value;
                   return setKiters([...kiters]);
