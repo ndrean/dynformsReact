@@ -9,9 +9,7 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import { Avatar } from "@material-ui/core";
-import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
-import Icon from "@material-ui/core/Icon";
 import DeleteIcon from "@material-ui/icons/Delete";
 
 const useStyles = makeStyles((theme) => ({
@@ -44,8 +42,10 @@ export default function ShowTrip(props) {
                 <TableCell component="th" scope="row">
                   <Avatar alt={kiter.name} src="" />
                 </TableCell>
-                <TableCell align="left">{kiter.pushed.toString()}</TableCell>
-                <TableCell align="left">->db</TableCell>
+                <TableCell align="left">
+                  {kiter.pushed ? kiter.pushed.toString() : "-"}
+                </TableCell>
+                <TableCell align="left">db</TableCell>
                 <TableCell align="left">
                   <IconButton
                     aria-label="delete"

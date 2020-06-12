@@ -7,17 +7,36 @@ import Paper from "@material-ui/core/Paper";
 //import Box from "@material-ui/core/Box";
 import Grid from "@material-ui/core/Grid";
 import Checkbox from "@material-ui/core/Checkbox";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+//import CssBaseline from "#material-ui/core/CssBaseline";
 
 import Button from "@material-ui/core/Button";
+import IconButton from "@material-ui/core/IconButton";
+import PhotoCamera from "@material-ui/icons/PhotoCamera";
 
 import ShowTrip from "./showTrip";
 //import TakePicButton from "./camera";
 
 import "../App.css";
 
-const BackgroundImagePage = () => {
-  return <div className="bg"></div>;
-};
+const styles = (theme) => ({
+  "#global": {
+    body: {
+      backgroundImage: "url('src/kitesurf.jpeg')",
+      backgroundRepeat: "no-repeat",
+      backgroundPosition: "center center",
+      backgroundSize: "cover",
+      backgroundAttachment: "fixed",
+      height: "100%",
+    },
+    html: {
+      height: "100%",
+    },
+    "#componentWithId": {
+      height: "100%",
+    },
+  },
+});
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -45,15 +64,8 @@ export default function Downwind() {
 
   //const [file, setFile] = useState(null);
 
-  const ironman = {
-    date: "2020-09-01T10:00",
-    startPoint: "Pipa",
-    endPoint: "Paracuru",
-  };
-
   const [kiters, setKiters] = useState([newKiter]);
   const [trip, setTrip] = useState(newTrip);
-  const [push, setPush] = useState(false);
 
   function handleAddKiter() {
     setKiters([...kiters, { ...newKiter }]);
@@ -87,7 +99,7 @@ export default function Downwind() {
       <h4>
         {" "}
         If logged in, you can create a downwind and push invitations to your
-        buddies
+        buddies with the checkbox.
       </h4>
       <div className={classes.root}>
         <form
@@ -100,7 +112,7 @@ export default function Downwind() {
             container
             spacing={3}
             direction="row"
-            justify="flex-start"
+            justify-content="center"
             alignItems="center"
           >
             <Grid item xs>
@@ -149,15 +161,17 @@ export default function Downwind() {
 
           <p>
             The 'current.user' will appear automatically as the first
-            participant{" "}
+            participant. There is an autocomplet on the name. The controller
+            will 'Find_by_name_or_Create' the kiter.{" "}
           </p>
 
           <Grid
             container
             spacing={3}
             direction="row"
-            justify="flex-start"
+            justify-content="center"
             alignItems="center"
+            position="absolute"
           >
             {kiters.map((kiter, id) => {
               // we iterate over the array to render. React asks for a key per div
@@ -165,7 +179,7 @@ export default function Downwind() {
                 <div key={`kiter-${id}`}>
                   <Grid item xs>
                     <TextField
-                      id="outlined-basic-1"
+                      id={`outlined-basic-1-${id}`}
                       label="Participant name"
                       variant="outlined"
                       value={kiter.name}
@@ -178,7 +192,7 @@ export default function Downwind() {
                   </Grid>
                   <Grid item xs>
                     <TextField
-                      id="outlined-basic-2"
+                      id={`outlined-basic-2-${id}`}
                       label="Contact phone"
                       variant="outlined"
                       value={kiter.contact}
@@ -188,14 +202,21 @@ export default function Downwind() {
                         return setKiters([...kiters]);
                       }}
                     ></TextField>
-                    <Checkbox
-                      color="primary"
-                      checked={[...kiters][id].pushed}
-                      inputProps={{ "aria-label": "secondary checkbox" }}
-                      onChange={() => {
-                        [...kiters][id].pushed = ![...kiters][id].pushed;
-                        setKiters([...kiters]);
-                      }}
+                    <FormControlLabel
+                      value="top"
+                      control={
+                        <Checkbox
+                          color="primary"
+                          checked={[...kiters][id].pushed}
+                          inputProps={{ "aria-label": "secondary checkbox" }}
+                          onChange={() => {
+                            [...kiters][id].pushed = ![...kiters][id].pushed;
+                            setKiters([...kiters]);
+                          }}
+                        />
+                      }
+                      label="Notify him!"
+                      labelPlacement="top"
                     />
                   </Grid>
 
@@ -204,15 +225,32 @@ export default function Downwind() {
                     accept="image/*"
                     multiple
                     type="file"
-                    id="raised-button-file"
-                    name="rased-button-file"
-                    //style={{ display: "none" }}
+                    id={`raised-button-file-${id}`}
+                    name="raised-button-file"
+                    style={{ display: "none" }}
                     onChange={(e) => {
                       // overide the spread array at the index 'id'
                       [...kiters][id].file = e.target.files[0];
                       return setKiters([...kiters]);
                     }}
                   />
+                  <label htmlFor={`raised-button-file-${id}`}>
+                    <IconButton
+                      color="primary"
+                      size="medium"
+                      aria-label="upload picture"
+                      component="span"
+                    >
+                      <PhotoCamera />
+                    </IconButton>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      component="span"
+                    >
+                      Camera
+                    </Button>
+                  </label>
                 </div>
               );
             })}
@@ -229,7 +267,7 @@ export default function Downwind() {
                 <Button
                   variant="outlined"
                   color="primary"
-                  size="small"
+                  size="large"
                   onClick={handleAddKiter}
                 >
                   Add buddies

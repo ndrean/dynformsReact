@@ -7,10 +7,14 @@ import InputBase from "@material-ui/core/InputBase";
 import { fade, makeStyles } from "@material-ui/core/styles";
 import MenuIcon from "@material-ui/icons/Menu";
 import SearchIcon from "@material-ui/icons/Search";
+import logo from "./kitesurf.jpeg";
 
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
+  },
+  logo: {
+    maxWidth: 100,
   },
   positionSticky: {
     position: "sticky",
@@ -80,6 +84,7 @@ export default function SearchAppBar() {
           >
             <MenuIcon />
           </IconButton>
+          <img alt="logo" src={logo} className={classes.logo} />
           <Typography className={classes.title} variant="h6" noWrap>
             Downwind
           </Typography>
@@ -88,7 +93,15 @@ export default function SearchAppBar() {
               <SearchIcon />
             </div>
             <InputBase
-              placeholder="Search…"
+              placeholder="Search by location…"
+              classes={{
+                root: classes.inputRoot,
+                input: classes.inputInput,
+              }}
+              inputProps={{ "aria-label": "search" }}
+            />
+            <InputBase
+              placeholder="Search by date…"
               classes={{
                 root: classes.inputRoot,
                 input: classes.inputInput,
