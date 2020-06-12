@@ -32,7 +32,24 @@
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
+}
+
+.bg {
+  background-image: url("./Components/kitesurf.jpeg");
+  height: 50vh;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  opacity: 0.2;
+  position: "absolute";
+  z-index: 1;
+}
+
+.top {
+  position: "relative";
+  z-index: 1;
 }

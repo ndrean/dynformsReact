@@ -8,6 +8,7 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
+import { Avatar } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
 import Icon from "@material-ui/core/Icon";
@@ -31,7 +32,9 @@ export default function ShowTrip(props) {
           <TableHead>
             <TableRow>
               <TableCell>Participant</TableCell>
-              <TableCell align="center">Phone</TableCell>
+              <TableCell align="left">Pushed</TableCell>
+              <TableCell align="left">Accepted</TableCell>
+
               <TableCell align="left">Remove</TableCell>
             </TableRow>
           </TableHead>
@@ -39,9 +42,10 @@ export default function ShowTrip(props) {
             {props.participants.map((kiter, id) => (
               <TableRow key={id}>
                 <TableCell component="th" scope="row">
-                  {kiter.name}
+                  <Avatar alt={kiter.name} src="" />
                 </TableCell>
-                <TableCell align="center">{kiter.contact}</TableCell>
+                <TableCell align="left">{kiter.pushed.toString()}</TableCell>
+                <TableCell align="left">->db</TableCell>
                 <TableCell align="left">
                   <IconButton
                     aria-label="delete"
