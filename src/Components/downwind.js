@@ -164,19 +164,17 @@ export default function Downwind() {
             participant. There is an autocomplet on the name. The controller
             will 'Find_by_name_or_Create' the kiter.{" "}
           </p>
-
-          <Grid
-            container
-            spacing={3}
-            direction="row"
-            justify-content="center"
-            alignItems="center"
-            position="absolute"
-          >
-            {kiters.map((kiter, id) => {
-              // we iterate over the array to render. React asks for a key per div
-              return (
-                <div key={`kiter-${id}`}>
+          {kiters.map((kiter, id) => {
+            // we iterate over the array to render. React asks for a key per div
+            return (
+              <div key={`kiter-${id}`}>
+                <Grid
+                  container
+                  spacing={3}
+                  direction="row"
+                  justify-content="center"
+                  alignItems="center"
+                >
                   <Grid item xs>
                     <TextField
                       id={`outlined-basic-1-${id}`}
@@ -189,8 +187,7 @@ export default function Downwind() {
                         return setKiters([...kiters]);
                       }}
                     >{`Kiter ${id + 1}`}</TextField>
-                  </Grid>
-                  <Grid item xs>
+
                     <TextField
                       id={`outlined-basic-2-${id}`}
                       label="Contact phone"
@@ -202,6 +199,8 @@ export default function Downwind() {
                         return setKiters([...kiters]);
                       }}
                     ></TextField>
+                  </Grid>
+                  <Grid item xs>
                     <FormControlLabel
                       value="top"
                       control={
@@ -216,45 +215,41 @@ export default function Downwind() {
                         />
                       }
                       label="Notify him!"
-                      labelPlacement="top"
+                      labelPlacement="start"
                     />
-                  </Grid>
 
-                  <input
-                    label="Upload"
-                    accept="image/*"
-                    multiple
-                    type="file"
-                    id={`raised-button-file-${id}`}
-                    name="raised-button-file"
-                    style={{ display: "none" }}
-                    onChange={(e) => {
-                      // overide the spread array at the index 'id'
-                      [...kiters][id].file = e.target.files[0];
-                      return setKiters([...kiters]);
-                    }}
-                  />
-                  <label htmlFor={`raised-button-file-${id}`}>
-                    <IconButton
-                      color="primary"
-                      size="medium"
-                      aria-label="upload picture"
-                      component="span"
-                    >
-                      <PhotoCamera />
-                    </IconButton>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      component="span"
-                    >
-                      Camera
-                    </Button>
-                  </label>
-                </div>
-              );
-            })}
-          </Grid>
+                    <input
+                      label="Upload"
+                      accept="image/*"
+                      multiple
+                      type="file"
+                      id={`raised-button-file-${id}`}
+                      name="raised-button-file"
+                      style={{ display: "none" }}
+                      onChange={(e) => {
+                        // overide the spread array at the index 'id'
+                        [...kiters][id].file = e.target.files[0];
+                        return setKiters([...kiters]);
+                      }}
+                    />
+                    <label htmlFor={`raised-button-file-${id}`}>
+                      <IconButton
+                        color="primary"
+                        size="medium"
+                        aria-label="upload picture"
+                        component="span"
+                      >
+                        Upload picture!
+                        <PhotoCamera />
+                      </IconButton>
+                    </label>
+                  </Grid>
+                </Grid>
+                <hr />
+              </div>
+            );
+          })}
+
           <Grid
             container
             spacing={3}
@@ -313,31 +308,4 @@ export default function Downwind() {
       </div>
     </>
   );
-}
-
-{
-  /* 
-    function handleChange(e) {
-    setTrip({ ...trip, [e.target.name]: e.target.value });
-  }
-
-    function NewInput(props) {
-    return (
-      <>
-        <label htmlFor={props.attr}>{props.children} </label>
-        <input
-          id={props.attr}
-          name={props.attr}
-          type={props.type}
-          value={[props.value]}
-          required={props.required}
-          onChange={props.onHandleChange}
-        />
-      </>
-    );
-  }
-  <NewInput type="text" attr="start" value={trip.start} onHandleChange={handleChange}> 
-    Choose location 
-  </NewInput>
-  */
 }

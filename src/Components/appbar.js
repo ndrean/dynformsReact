@@ -93,15 +93,20 @@ export default function SearchAppBar() {
               <SearchIcon />
             </div>
             <InputBase
-              placeholder="Search by location…"
+              placeholder="place"
               classes={{
                 root: classes.inputRoot,
                 input: classes.inputInput,
               }}
               inputProps={{ "aria-label": "search" }}
             />
+          </div>
+          <div className={classes.search}>
+            <div className={classes.searchIcon}>
+              <SearchIcon />
+            </div>
             <InputBase
-              placeholder="Search by date…"
+              placeholder="date"
               classes={{
                 root: classes.inputRoot,
                 input: classes.inputInput,

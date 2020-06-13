@@ -1,5 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import "fontsource-roboto";
 //import Paper from "@material-ui/core/Paper";
 //import Image from "./kitesurf.png";
 //import "./index.css";
@@ -15,8 +16,7 @@ const theme = createMuiTheme({
     MuiCssBaseline: {
       "@global": {
         body: {
-          backgroundImage:
-            "url(https://github.com/ndrean/dynformsReact/blob/b3f6d3cbf79bea465298c15039b7faa1b2b15dd6/src/Components/kitesurf.jpeg)",
+          backgroundImage: "url(./kitesurf.jpeg)",
         },
       },
     },
