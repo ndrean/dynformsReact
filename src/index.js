@@ -39,7 +39,7 @@ function Layout({ children }) {
         </Container>
       </>
     );
-  }, []);
+  }, [children]);
   return body;
 }
 
@@ -95,9 +95,12 @@ const routes = [
       return (
         <>
           {/* <React.StrictMode> */}
-          <SearchAppBar />
-          <CssBaseline />
-          <Downwind />
+          <Layout>
+            <Downwind />
+          </Layout>
+
+          {/* <CssBaseline /> */}
+
           {/* </React.StrictMode> */}
         </>
       );
@@ -108,8 +111,9 @@ const routes = [
     async action() {
       return (
         <>
-          <SearchAppBar />
-          <h1>About</h1>;
+          <Layout>
+            <h1>About</h1>
+          </Layout>
         </>
       );
     },
