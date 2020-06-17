@@ -36,7 +36,7 @@ const theme = createMuiTheme({
 const routes = [
   {
     path: "/",
-    action: () => {
+    async action() {
       return (
         <>
           <SearchAppBar />
@@ -82,14 +82,14 @@ const routes = [
     async action() {
       return (
         <>
-          <React.StrictMode>
-            <SearchAppBar />
-            <MuiThemeProvider theme={theme}>
-              <CssBaseline />
+          {/* <React.StrictMode> */}
+          <SearchAppBar />
+          <MuiThemeProvider theme={theme}>
+            <CssBaseline />
 
-              <Downwind />
-            </MuiThemeProvider>
-          </React.StrictMode>
+            <Downwind />
+          </MuiThemeProvider>
+          {/* </React.StrictMode> */}
         </>
       );
     },
@@ -118,6 +118,7 @@ function renderRoute(location) {
 
 renderRoute(history.location);
 history.listen(renderRoute);
+history.listen(({ location }) => console.log(`${window.location.pathname}`));
 // renderRoute(window.location);
 
 // If you want your app to work offline and load faster, you can change
