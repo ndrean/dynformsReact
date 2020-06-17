@@ -22,7 +22,7 @@ import "../App.css";
 const styles = (theme) => ({
   "#global": {
     body: {
-      backgroundImage: "url('src/kitesurf.jpeg')",
+      backgroundImage: "url('src/Components/images/kitesurf.svg')",
       backgroundRepeat: "no-repeat",
       backgroundPosition: "center center",
       backgroundSize: "cover",
@@ -62,8 +62,6 @@ export default function Downwind() {
   const newKiter = { name: "", contact: "", pushed: false, file: "" };
   const newTrip = { date: "", startPoint: "", endPoint: "" };
 
-  //const [file, setFile] = useState(null);
-
   const [kiters, setKiters] = useState([newKiter]);
   const [trip, setTrip] = useState(newTrip);
 
@@ -87,7 +85,6 @@ export default function Downwind() {
     return setKiters(
       [...kiters].filter((kiter, id) => {
         if (id !== index) {
-          console.log(kiter);
           return kiter;
         }
       })
