@@ -1,27 +1,36 @@
 import React from "react";
 
 export default function Geoloc(props) {
+  const [accept, setAccept] = React.useState(false);
+  const [pos, setPos] = React.useState({});
   React.useEffect(() => {
-    if (props.accept) {
-      console.log("go");
+    if (accept) {
       navigator.geolocation.getCurrentPosition(
         ({ coords: { latitude, longitude } }) => {
-          console.log(latitude, longitude);
           setPos({
-            lat: latitude.toFixed(2),
-            lng: longitude.toFixed(2),
+            Lat: latitude.toFixed(2),
+            Lng: longitude.toFixed(2),
           });
+
+          localStorage.setItem(
+            "localPosition",
+            JSON.stringify({
+              Lat: latitude.toFixed(2),
+              Lng: longitude.toFixed(2),
+            })
+          );
         }
       );
     }
-  }, [props.accept]);
+  }, [accept]);
+
   return (
     <>
-      <button onClick={props.handeAccept}>Accept geolocalisation</button>
-      {props.accept && (
+      <button onClick={() => setAccept(true)}>Accept geolocalisation</button>
+      {accept && (
         <p>
           {" "}
-          You are here: {props.pos.lat} | {props.pos.lng}{" "}
+          Your position is: latitude: {pos.Lat} et Longitude: {pos.Lng}{" "}
         </p>
       )}
     </>

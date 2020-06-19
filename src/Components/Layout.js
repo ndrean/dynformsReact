@@ -1,6 +1,6 @@
 import React from "react";
 import Container from "@material-ui/core/Container";
-import SearchAppBar from "./appbar";
+import SearchAppBar from "./SearchAppBar";
 
 export default function Layout({ children }) {
   const [body, setBody] = React.useState(

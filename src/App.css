@@ -46,3 +46,13 @@
   left: 0;
   bottom: 0;
 }
+
+.coordOfClick {
+  display: "inline-block";
+  margin: 12;
+  padding: 5;
+  background-color: "#404040";
+  color: "white";
+  font-weight: "bold";
+  font-size: 18;
+}
