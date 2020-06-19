@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { fade, makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -8,8 +8,6 @@ import InputBase from "@material-ui/core/InputBase";
 import Badge from "@material-ui/core/Badge";
 import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
-// import MenuIcon from "@material-ui/icons/Menu";
-// import Button from "@material-ui/core/Button";
 import SearchIcon from "@material-ui/icons/Search";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import NotificationsIcon from "@material-ui/icons/Notifications";
@@ -210,6 +208,7 @@ export default function PrimarySearchAppBar() {
             aria-haspopup="true"
             onClick={handleNavMenuOpen}
           >
+            {/* <Logo style={{ width: 40 }} /> */}
             <img alt="logo" src={logo} style={{ width: 40 }} />
           </IconButton>
 
@@ -252,8 +251,8 @@ export default function PrimarySearchAppBar() {
 
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
-            <IconButton aria-label="show 17 new notifications" color="inherit">
-              <Badge badgeContent={17} color="secondary">
+            <IconButton aria-label="show 7 new notifications" color="inherit">
+              <Badge badgeContent={7} color="secondary">
                 <NotificationsIcon />
               </Badge>
             </IconButton>

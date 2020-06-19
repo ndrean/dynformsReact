@@ -2,10 +2,11 @@
 
 import React, { useState } from "react";
 import TextField from "@material-ui/core/TextField";
-import { makeStyles, withStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 //import Box from "@material-ui/core/Box";
 import Grid from "@material-ui/core/Grid";
+import TextareaAutosize from "@material-ui/core/TextareaAutosize";
 import Checkbox from "@material-ui/core/Checkbox";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 //import CssBaseline from "#material-ui/core/CssBaseline";
@@ -17,26 +18,9 @@ import PhotoCamera from "@material-ui/icons/PhotoCamera";
 import ShowTrip from "./showTrip";
 //import TakePicButton from "./camera";
 
-import "../App.css";
+import { useIdb } from "react-use-idb";
 
-const styles = (theme) => ({
-  "#global": {
-    body: {
-      backgroundImage: "url('src/Components/images/kitesurf.svg')",
-      backgroundRepeat: "no-repeat",
-      backgroundPosition: "center center",
-      backgroundSize: "cover",
-      backgroundAttachment: "fixed",
-      height: "100%",
-    },
-    html: {
-      height: "100%",
-    },
-    "#componentWithId": {
-      height: "100%",
-    },
-  },
-});
+import "../App.css";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -60,10 +44,15 @@ export default function Downwind() {
   const classes = useStyles();
 
   const newKiter = { name: "", contact: "", pushed: false, file: "" };
-  const newTrip = { date: "", startPoint: "", endPoint: "" };
+  const newTrip = { date: "", startPoint: "", endPoint: "", comment: "" };
 
   const [kiters, setKiters] = useState([newKiter]);
   const [trip, setTrip] = useState(newTrip);
+
+  const [user, setUser] = useIdb("user", {
+    name: "Fred",
+    email: " star@hackit.js",
+  });
 
   function handleAddKiter() {
     setKiters([...kiters, { ...newKiter }]);
@@ -98,6 +87,7 @@ export default function Downwind() {
         If logged in, you can create a downwind and push invitations to your
         buddies with the checkbox.
       </h4>
+
       <div className={classes.root}>
         <form
           onSubmit={handleSubmit}
@@ -150,6 +140,19 @@ export default function Downwind() {
                   value={trip.end}
                   onChange={(e) =>
                     setTrip({ ...trip, endPoint: e.target.value })
+                  }
+                />
+              </Paper>
+
+              <Paper className={classes.paper}>
+                <TextareaAutosize
+                  id="textarea"
+                  label="Comments"
+                  aria-label="empty textarea"
+                  placeholder="Any comments..."
+                  value={trip.comment}
+                  onChange={(e) =>
+                    setTrip({ ...trip, comment: e.target.value })
                   }
                 />
               </Paper>
