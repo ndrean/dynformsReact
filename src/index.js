@@ -23,13 +23,23 @@ import { ReactComponent as Logo } from "./Components/images/kitesurfing.svg";
 import mapboxgl from "mapbox-gl";
 import "./App.css";
 import Loader from "./Components/spinner";
+import Layout from "./Components/Layout";
 
-function Map({ lat = 45, lng = 5, zoom = 4 }) {
+const maPosition = JSON.parse(localStorage.getItem("maPosition"));
+
+const maPositionObj = { ...maPosition, zoom: 4 } || {
+  lat: 45,
+  long: 0,
+  zoom: 4,
+};
+console.log("ici", maPositionObj);
+
+function Map({ lat = maPositionObj.lat, long = maPositionObj.long, zoom = 4 }) {
   const [isLoading, setIsLoading] = React.useState(true);
   // const mapContainerRef = React.useRef(null);
   const [marker, setMarker] = React.useState([]);
   const [latitude, setLatitude] = React.useState(lat);
-  const [longitude, setLongitude] = React.useState(lng);
+  const [longitude, setLongitude] = React.useState(long);
   const [Zoom, setZoom] = React.useState(zoom);
   const [place, setPlace] = React.useState(null);
 
@@ -50,7 +60,7 @@ function Map({ lat = 45, lng = 5, zoom = 4 }) {
     map.addControl(new mapboxgl.NavigationControl(), "bottom-right");
 
     const Marker = new mapboxgl.Marker()
-      .setLngLat([5, 45])
+      .setLngLat([longitude, latitude])
       .setPopup(
         new mapboxgl.Popup({ offset: 25 }).setHTML(
           "<p>Date : xx/xx/xx</p> <p>3 kiters</p>"
@@ -163,45 +173,27 @@ function Map({ lat = 45, lng = 5, zoom = 4 }) {
   );
 }
 
-function Layout({ children }) {
-  const [body, setBody] = React.useState(
-    <>
-      <Container>
-        <SearchAppBar />
-      </Container>
-    </>
-  );
-
-  React.useEffect(() => {
-    setBody(
-      <>
-        <Container>
-          <SearchAppBar />
-          {children}
-        </Container>
-      </>
-    );
-  }, [children]);
-  return body;
-}
+/*******************************************************/
 
 function Geoloc() {
-  const [pos, setPos] = React.useState({ lat: "", lng: "" });
+  const [pos, setPos] = React.useState({ long: "", lat: "" });
   const [accept, setAccept] = React.useState(false);
 
   React.useEffect(() => {
     if (accept) {
       navigator.geolocation.getCurrentPosition(
         ({ coords: { latitude, longitude } }) => {
-          console.log(latitude, longitude);
           setPos({
             lat: latitude.toFixed(2),
-            lng: longitude.toFixed(2),
+            long: longitude.toFixed(2),
           });
         }
       );
     }
   }, [accept]);
+
+  localStorage.setItem("maPosition", JSON.stringify(pos));
+
   return (
     <>
       <button onClick={() => setAccept(true)}>Accept geolocalisation</button>
@@ -214,6 +206,8 @@ function Geoloc() {
     </>
   );
 }
+
+/*******************************************************/
 
 const routes = [
   {
@@ -231,9 +225,9 @@ const routes = [
                   To fully use this app, you may want to enable geolocalisation
                   and create an account.
                 </p>
-
-                <p>You can find a downwind close to you:</p>
                 <Geoloc />
+                <p>You can find a downwind close to you:</p>
+
                 <p>
                   You can propose to join a downwind when you are logged in. The
                   kiter who initiated the downwind will accept or not your
@@ -280,9 +274,9 @@ const routes = [
   },
 ];
 
+/*******************************************************/
 const router = new Router(routes);
 // eslint-disable-next-line no-restricted-globals
-
 function renderRoute() {
   router.resolve({ pathname: window.location.pathname }).then((html) => {
     render(html, document.getElementById("root"));
@@ -292,6 +286,8 @@ function renderRoute() {
 history.listen(renderRoute);
 history.listen(({ location }) => console.log(`${location.pathname}`));
 renderRoute(history.location);
+
+/*******************************************************/
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

@@ -188,7 +188,7 @@ export default function PrimarySearchAppBar() {
           New
         </MenuItem>
         <MenuItem component={Link} onClick={onNavClick} href="/Maps">
-          About
+          Maps
         </MenuItem>
       </Menu>
     </>
