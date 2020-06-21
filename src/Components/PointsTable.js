@@ -16,7 +16,7 @@ const useStyles = makeStyles({
   },
 });
 
-export default function TableGPS(props) {
+export default function PointsTable(props) {
   const classes = useStyles();
   // const [{ address, point, keep = false }] = rows;
   return (
@@ -26,24 +26,25 @@ export default function TableGPS(props) {
           <TableHead>
             <TableRow>
               <TableCell>Address </TableCell>
-              <TableCell align="right">Latitude</TableCell>
-              <TableCell align="right">Longitude</TableCell>
+              <TableCell align="right">Coords</TableCell>
               <TableCell align="right">Keep?</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {props.rows.map((row, index) => (
               <TableRow key={index}>
-                <TableCell component="th" scope="row" align="right">
+                <TableCell component="th" scope="row" align="left">
                   {JSON.stringify(row.address)}
                 </TableCell>
-                <TableCell align="right">{row.point.lat}</TableCell>
-                <TableCell align="right">{row.point.lng}</TableCell>
+                <TableCell align="right">
+                  {row.point.lat} {row.point.lng}
+                </TableCell>
                 <TableCell align="right">
                   <button onClick={() => props.onRowRemove(row.address)}>
-                    <IconButton aria-label="delete" color="secondary">
-                      <DeleteIcon fontSize="large" />
-                    </IconButton>
+                    Remove
+                    {/* <IconButton aria-label="delete" color="secondary">
+                      <DeleteIcon fontSize="small" />
+                    </IconButton> */}
                   </button>
                 </TableCell>
               </TableRow>

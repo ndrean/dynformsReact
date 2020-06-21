@@ -1,6 +1,5 @@
 import React from "react";
 import "fontsource-roboto";
-
 import Container from "@material-ui/core/Container";
 
 // import { useIdb } from "react-use-idb";
@@ -9,6 +8,10 @@ import mapboxgl from "mapbox-gl";
 import "../App.css";
 import Loader from "./Loader";
 
+const MapboxGeocoder = require("@mapbox/mapbox-gl-geocoder");
+const mapboxApiAccessToken =
+  "pk.eyJ1IjoibmRyZWFuIiwiYSI6ImNrMnE2d3RlZTBiMjkzZHA3enZ4dXU1cmEifQ.5DQRQQ9H6Gb0Fpat5mz1uw";
+
 export default function Map({ Lat, Lng, zoom }) {
   const [isLoading, setIsLoading] = React.useState(true);
   // const mapContainerRef = React.useRef(null);
@@ -16,11 +19,10 @@ export default function Map({ Lat, Lng, zoom }) {
   const [latitude, setLatitude] = React.useState(Lat);
   const [longitude, setLongitude] = React.useState(Lng);
   const [place, setPlace] = React.useState(null);
-  console.log(latitude, longitude);
+  const [search, setSearch] = React.useState(null);
+
   // process.env.APP_TOKEN "pk.eyJ1IjoibmRyZWFuIiwiYSI6ImNrMnE2d3RlZTBiMjkzZHA3enZ4dXU1cmEifQ.5DQRQQ9H6Gb0Fpat5mz1uw";
 
-  const mapboxApiAccessToken =
-    "pk.eyJ1IjoibmRyZWFuIiwiYSI6ImNrMnE2d3RlZTBiMjkzZHA3enZ4dXU1cmEifQ.5DQRQQ9H6Gb0Fpat5mz1uw";
   mapboxgl.accessToken = mapboxApiAccessToken;
 
   React.useLayoutEffect(() => {
@@ -32,6 +34,15 @@ export default function Map({ Lat, Lng, zoom }) {
     });
 
     map.addControl(new mapboxgl.NavigationControl(), "bottom-right");
+    const geocoder = map.addControl(
+      new MapboxGeocoder({
+        accessToken: mapboxApiAccessToken,
+        mapboxgl: mapboxgl,
+      })
+    );
+    // document.getElementById("geocoder").appendChild(geocoder.onAdd(map));
+
+    setSearch(geocoder);
 
     const Marker = new mapboxgl.Marker()
       .setLngLat([longitude, latitude])
@@ -51,6 +62,11 @@ export default function Map({ Lat, Lng, zoom }) {
     //   setLatitude(map.getCenter().lat.toFixed(2));
     //   setZoomed(map.getZoom().toFixed(1));
     // });
+
+    geocoder.on("results", (e) => {
+      // setGeocoder(e)
+      console.log(e);
+    });
 
     map.on("click", (e) => {
       localStorage.setItem("click", JSON.stringify(e.lngLat));
@@ -119,7 +135,9 @@ export default function Map({ Lat, Lng, zoom }) {
         </form>
       )}
       <div id="mapContainerRef"></div>
+
       {/* ref={mapContainerRef} */}
+      <div id="geocoder" className="geocoder"></div>
     </>
   );
 }
