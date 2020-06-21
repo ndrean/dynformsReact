@@ -7,6 +7,8 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
+import IconButton from "@material-ui/core/IconButton";
+import DeleteIcon from "@material-ui/icons/Delete";
 
 const useStyles = makeStyles({
   table: {
@@ -39,7 +41,9 @@ export default function TableGPS(props) {
                 <TableCell align="right">{row.point.lng}</TableCell>
                 <TableCell align="right">
                   <button onClick={() => props.onRowRemove(row.address)}>
-                    Remove
+                    <IconButton aria-label="delete" color="secondary">
+                      <DeleteIcon fontSize="large" />
+                    </IconButton>
                   </button>
                 </TableCell>
               </TableRow>
