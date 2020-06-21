@@ -6,12 +6,11 @@ export default function Geoloc(props) {
   React.useEffect(() => {
     if (accept) {
       navigator.geolocation.getCurrentPosition(
-        ({ coords: { latitude, longitude } }) => {
+        ({ coords: { latitude, longitude } } = {}) => {
           setPos({
             Lat: latitude.toFixed(2),
             Lng: longitude.toFixed(2),
           });
-
           localStorage.setItem(
             "localPosition",
             JSON.stringify({
@@ -19,6 +18,13 @@ export default function Geoloc(props) {
               Lng: longitude.toFixed(2),
             })
           );
+        },
+        (error) => console.log("not available", error),
+
+        {
+          enableHighAccuracy: true,
+          timeout: 10_000,
+          maximumAge: 10_000,
         }
       );
     }

@@ -14,7 +14,7 @@ import NotificationsIcon from "@material-ui/icons/Notifications";
 import MoreIcon from "@material-ui/icons/MoreVert";
 import Link from "@material-ui/core/Link";
 import history from "./history";
-import { ReactComponent as Logo } from "./images/kitesurfing.svg";
+// import { ReactComponent as Logo } from "./images/kitesurfing.svg";
 import logo from "./images/kitesurfing.svg";
 
 const useStyles = makeStyles((theme) => ({
@@ -187,8 +187,11 @@ export default function SearchAppBar() {
         <MenuItem component={Link} onClick={onNavClick} href="/new">
           New
         </MenuItem>
-        <MenuItem component={Link} onClick={onNavClick} href="/Maps">
-          Maps
+        <MenuItem component={Link} onClick={onNavClick} href="/MMap">
+          Mpabox-Map
+        </MenuItem>
+        <MenuItem component={Link} onClick={onNavClick} href="/LMap">
+          Leaflet-Map
         </MenuItem>
       </Menu>
     </>
@@ -240,7 +243,7 @@ export default function SearchAppBar() {
               <SearchIcon />
             </div>
             <InputBase
-              placeholder="Kiter…"
+              placeholder="Date…"
               classes={{
                 root: classes.inputRoot,
                 input: classes.inputInput,

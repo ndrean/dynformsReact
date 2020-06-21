@@ -26,3 +26,11 @@ renderRoute(history.location);
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: https://bit.ly/CRA-PWA
 serviceWorker.unregister();
+// if ("serviceWorker" in navigator) {
+//   window.addEventListener("load", function () {
+//     navigator.serviceWorker
+//       .register("/serviceWorker.js")
+//       .then((res) => console.log("service worker registered"))
+//       .catch((err) => console.log("service worker not registered", err));
+//   });
+// }

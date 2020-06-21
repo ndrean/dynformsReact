@@ -9,15 +9,14 @@ import mapboxgl from "mapbox-gl";
 import "../App.css";
 import Loader from "./Loader";
 
-export default function Map({ lat = 45, lng = 3, zoom = 4 }) {
+export default function Map({ Lat, Lng, zoom }) {
   const [isLoading, setIsLoading] = React.useState(true);
   // const mapContainerRef = React.useRef(null);
   const [marker, setMarker] = React.useState([]);
-  const [latitude, setLatitude] = React.useState(lat);
-  const [longitude, setLongitude] = React.useState(lng);
-  const [zoomed, setZoomed] = React.useState(zoom);
+  const [latitude, setLatitude] = React.useState(Lat);
+  const [longitude, setLongitude] = React.useState(Lng);
   const [place, setPlace] = React.useState(null);
-
+  console.log(latitude, longitude);
   // process.env.APP_TOKEN "pk.eyJ1IjoibmRyZWFuIiwiYSI6ImNrMnE2d3RlZTBiMjkzZHA3enZ4dXU1cmEifQ.5DQRQQ9H6Gb0Fpat5mz1uw";
 
   const mapboxApiAccessToken =
@@ -85,7 +84,6 @@ export default function Map({ lat = 45, lng = 3, zoom = 4 }) {
           {
             geometry: { coordinates },
           },
-          ...rest
         ] = data.features;
         console.log(coordinates);
         marker.setLngLat(coordinates);

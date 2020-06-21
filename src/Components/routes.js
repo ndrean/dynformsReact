@@ -6,7 +6,7 @@ import { ReactComponent as Logo } from "./images/kitesurfing.svg";
 import Downwind from "./Downwind";
 import Map from "./Map";
 import Geoloc from "./Geoloc";
-import { LngLat } from "mapbox-gl";
+import Lmap from "./MapLeaf";
 
 export const routes = [
   {
@@ -60,15 +60,40 @@ export const routes = [
     },
   },
   {
-    path: "/Maps",
+    path: "/MMap",
     async action() {
-      const { Lat, Lng, zoom = 4 } = await JSON.parse(
+      const { Lat, Lng, zoom = 10 } = (await JSON.parse(
         localStorage.getItem("localPosition")
-      );
-      return await (
+      )) || {
+        Lat: 47.2,
+        Lng: -1.5,
+        zoom: 2,
+      };
+
+      return (
         <Layout>
           <Container>
-            <Map lat={Lat} lng={Lng} zoom={zoom} />
+            <Map Lat={Lat} Lng={Lng} zoom={zoom} />
+          </Container>
+        </Layout>
+      );
+    },
+  },
+  {
+    path: "/LMap",
+    async action() {
+      const { Lat, Lng, zoom = 15 } = JSON.parse(
+        localStorage.getItem("localPosition")
+      ) || {
+        Lat: 47.2,
+        Lng: -1.5,
+        zoom: 4,
+      };
+
+      return (
+        <Layout>
+          <Container>
+            <Lmap Lat={Lat} Lng={Lng} zoom={zoom} />
           </Container>
         </Layout>
       );
