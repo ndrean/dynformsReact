@@ -19,7 +19,7 @@ export default function Lmap({ Lat, Lng, zoom }) {
   const [longitude, setLongitude] = React.useState(Lng);
   const [point, setPoint] = React.useState({ lat: Lat, lng: Lng });
   const [address, setAddress] = React.useState(null);
-  const [keep, setKeep] = React.useState(false);
+  // const [keep, setKeep] = React.useState(false);
   const [Zoom, setZoom] = React.useState(zoom);
   // const [mapState, setMapState] = React.useState(null);
   const [markerState, setMarkerState] = React.useState(null);
@@ -39,19 +39,40 @@ export default function Lmap({ Lat, Lng, zoom }) {
     L.marker([Lat, Lng]).addTo(markerGroup);
 
     const searchControl = new esriGeocode.geosearch().addTo(myMap);
-    const resultGroup = new L.layerGroup().addTo(myMap);
+    // const resultGroup = new L.layerGroup().addTo(myMap);
 
-    searchControl.on("results", () => {
-      resultGroup.clearLayers();
+    searchControl.on("results", (e) => {
+      L.marker(e.latlng).addTo(markerGroup);
+      setLatitude(e.latlng.lat.toFixed(4));
+      setLongitude(e.latlng.lng.toFixed(4));
+      setPoint({ lat: e.latlng.lat.toFixed(4), lng: e.latlng.lng.toFixed(4) });
+      setRows((prev) => {
+        return [
+          ...prev,
+          {
+            address: {
+              Country: e.results[0].properties.Country,
+              Address: e.results[0].properties.ShortLabel,
+              City: e.results[0].properties.City,
+            },
+
+            point: {
+              lat: e.latlng.lat.toFixed(4),
+              lng: e.latlng.lng.toFixed(4),
+            },
+          },
+        ];
+      });
+      // resultGroup.clearLayers();
     });
 
     myMap.on("click", (e) => {
-      setLatitude(point.lat);
-      setLongitude(point.lng);
       markerGroup.clearLayers();
+      setPoint({ lat: e.latlng.lat.toFixed(4), lng: e.latlng.lng.toFixed(4) });
+
       L.marker(e.latlng).addTo(markerGroup);
       reverseGeocode(e.latlng);
-      setZoom(e.target._zoom);
+      // setZoom(e.target._zoom);
     });
 
     return () => myMap.remove();
@@ -76,7 +97,7 @@ export default function Lmap({ Lat, Lng, zoom }) {
     setPoint({ lat: latitude, lng: longitude });
     L.marker([point.lat, point.lng]).addTo(markerState);
     setRows((prev) => {
-      return [...prev, { address, point, keep: false }];
+      return [...prev, { address, point }];
     });
   }
 
@@ -110,7 +131,13 @@ export default function Lmap({ Lat, Lng, zoom }) {
 
       <div id="map"></div>
       <PointsTable rows={rows} onRowRemove={handleRowRemove} />
-      <Button variant="contained" color="primary" onClick={() => {}}>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={() => {
+          return rows;
+        }}
+      >
         Save
       </Button>
     </>

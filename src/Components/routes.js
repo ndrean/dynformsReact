@@ -82,7 +82,7 @@ export const routes = [
   {
     path: "/LMap",
     async action() {
-      const { Lat, Lng, zoom = 15 } = (await JSON.parse(
+      const { Lat, Lng, zoom = 5 } = (await JSON.parse(
         localStorage.getItem("localPosition")
       )) || {
         Lat: 47.2,
