@@ -4,9 +4,10 @@ import Layout from "./Layout";
 import { ReactComponent as Logo } from "./images/kitesurfing.svg";
 // import Logo from "./Components/logo"; IDEM ?
 import Downwind from "./Downwind";
-import Map from "./Map";
+
 import Geoloc from "./Geoloc";
 import Lmap from "./MapLeaf";
+import Search from "./Search";
 
 export const routes = [
   {
@@ -59,35 +60,33 @@ export const routes = [
       );
     },
   },
-  {
-    path: "/MMap",
-    async action() {
-      const { Lat, Lng, zoom = 10 } = (await JSON.parse(
-        localStorage.getItem("localPosition")
-      )) || {
-        Lat: 47.2,
-        Lng: -1.5,
-        zoom: 5,
-      };
+  // {
+  //   path: "/MMap",
+  //   async action() {
+  //     const { Lat, Lng, zoom = 7 } = (await JSON.parse(
+  //       localStorage.getItem("localPosition")
+  //     )) || {
+  //       Lat: 47.2,
+  //       Lng: -1.5,
+  //     };
 
-      return (
-        <Layout>
-          <Container>
-            <Map Lat={Lat} Lng={Lng} zoom={zoom} />
-          </Container>
-        </Layout>
-      );
-    },
-  },
+  //     return (
+  //       <Layout>
+  //         <Container>
+  //           <Map Lat={Lat} Lng={Lng} zoom={zoom} />
+  //         </Container>
+  //       </Layout>
+  //     );
+  //   },
+  // },
   {
     path: "/LMap",
     async action() {
-      const { Lat, Lng, zoom = 5 } = (await JSON.parse(
+      const { Lat, Lng, zoom = 7 } = (await JSON.parse(
         localStorage.getItem("localPosition")
       )) || {
         Lat: 47.2,
         Lng: -1.5,
-        zoom: 5,
       };
 
       return (
@@ -95,6 +94,23 @@ export const routes = [
           <Container>
             <Lmap Lat={Lat} Lng={Lng} zoom={zoom} />
           </Container>
+        </Layout>
+      );
+    },
+  },
+  {
+    path: "/Search",
+    async action() {
+      const { Lat, Lng, zoom = 7 } = (await JSON.parse(
+        localStorage.getItem("localPosition")
+      )) || {
+        Lat: 47.2,
+        Lng: -1.5,
+      };
+
+      return (
+        <Layout>
+          <Search Lat={parseFloat(Lat)} Lng={parseFloat(Lng)} zoom={zoom} />
         </Layout>
       );
     },

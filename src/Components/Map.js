@@ -19,7 +19,7 @@ export default function Map({ Lat, Lng, zoom }) {
   const [latitude, setLatitude] = React.useState(Lat);
   const [longitude, setLongitude] = React.useState(Lng);
   const [place, setPlace] = React.useState(null);
-  const [search, setSearch] = React.useState(null);
+  const [, setSearch] = React.useState(null);
 
   // process.env.APP_TOKEN "pk.eyJ1IjoibmRyZWFuIiwiYSI6ImNrMnE2d3RlZTBiMjkzZHA3enZ4dXU1cmEifQ.5DQRQQ9H6Gb0Fpat5mz1uw";
 

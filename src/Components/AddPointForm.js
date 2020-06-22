@@ -4,11 +4,11 @@ import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import TextareaAutosize from "@material-ui/core/TextareaAutosize";
 
-export default function AppPointForm({
+export default function AddPointForm({
   onFormSubmit,
-  onLatitudeChange,
-  onLongitudeChange,
-  onAddressChange,
+  // onLatitudeChange,
+  // onLongitudeChange,
+  // onAddressChange,
   latitude,
   longitude,
   address,
@@ -36,23 +36,23 @@ export default function AppPointForm({
         label="latitude"
         type="number"
         value={latitude}
-        onChange={onLatitudeChange}
+        // onChange={onLatitudeChange}
       />
       <TextField
         id="standard-basic-lng"
         label="longitude"
         type="number"
         value={longitude}
-        onChange={onLongitudeChange}
+        // onChange={onLongitudeChange}
       />
       <TextareaAutosize
         aria-label="empty textarea"
         placeholder="Empty"
         value={address}
-        onChange={onAddressChange}
+        // onChange={onAddressChange}
       />
       <Button type="submit" variant="contained" color="primary" id="update">
-        Keep
+        Store point
       </Button>
     </form>
   );

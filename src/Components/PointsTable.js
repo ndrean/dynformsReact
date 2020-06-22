@@ -7,7 +7,7 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
-import Grid from "@material-ui/core/Grid";
+// import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 // import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from "@material-ui/icons/Delete";
@@ -33,16 +33,16 @@ export default function PointsTable(props) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {props.rows.map((row, index) => (
-              <TableRow key={index}>
+            {props.rows.map(({ address, point: { lat, lng } }, index) => (
+              <TableRow key={address}>
                 <TableCell component="th" scope="row" align="left">
-                  {JSON.stringify(row.address)}
+                  {JSON.stringify(address)}
                 </TableCell>
                 <TableCell align="right">
-                  {row.point.lat}, {row.point.lng}
+                  [lt:{lat}, Lg:{lng}]
                 </TableCell>
                 <TableCell align="right">
-                  <Button onClick={() => props.onRowRemove(row.address)}>
+                  <Button onClick={() => props.onRowRemove(address)}>
                     <DeleteIcon fontSize="small" color="secondary" />
                     {/* <IconButton aria-label="delete" >
                       

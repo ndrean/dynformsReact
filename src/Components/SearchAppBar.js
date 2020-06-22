@@ -187,11 +187,14 @@ export default function SearchAppBar() {
         <MenuItem component={Link} onClick={onNavClick} href="/new">
           New
         </MenuItem>
-        <MenuItem component={Link} onClick={onNavClick} href="/MMap">
+        {/* <MenuItem component={Link} onClick={onNavClick} href="/MMap">
           Mpabox-Map
-        </MenuItem>
+        </MenuItem> */}
         <MenuItem component={Link} onClick={onNavClick} href="/LMap">
           Leaflet-Map
+        </MenuItem>
+        <MenuItem component={Link} onClick={onNavClick} href="/Search">
+          Search
         </MenuItem>
       </Menu>
     </>
