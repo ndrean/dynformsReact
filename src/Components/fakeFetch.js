@@ -13,23 +13,30 @@ const fetchFakeData = ({ lat, lng, radius }) => {
   }
 
   const newFeaturesList = [];
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < 10; i++) {
     const id = i;
     const [dlng, dlat] = getRandomCoords({ lat, lng, radius });
 
     const dateStart = new Date("2020-09-01") + i;
     const dateEnd = dateStart;
     const setType = (i) => {
-      return i % 2 === 0 ? "kite" : "bike";
+      if (i % 3 === 0) {
+        return "Kite";
+      } else if (i % 3 === 1) {
+        return "Bike";
+      } else {
+        return "Canoe";
+      }
     };
 
     newFeaturesList.push({
       type: "Feature",
       geometry: {
-        type: "Point",
-        coordinates: [dlng, dlat],
-        // [dlng + 0.1, dlat + 0.1],
-        // ],
+        type: "LineString",
+        coordinates: [
+          [dlng, dlat],
+          [dlng + 0.1, dlat + 0.1],
+        ],
       },
       properties: {
         type: setType(i),

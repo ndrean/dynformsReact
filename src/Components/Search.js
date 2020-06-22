@@ -9,6 +9,7 @@ import { GeoSearchControl, OpenStreetMapProvider } from "leaflet-geosearch";
 
 import useConfigureLeaflet from "./useConfigureLeaflet";
 
+import SelectType from "./SelectType";
 // import { geojsonFeature } from "./mydata";
 import fetchFakeData from "./fakeFetch";
 // import { map } from "mobx-state-tree/dist/internal";
@@ -20,6 +21,7 @@ export default function Search({ Lat, Lng, zoom } = {}) {
   // const [latitude, setLatitude] = React.useState(Lat);
   // const [longitude, setLongitude] = React.useState(Lng);
   const [center, setCenter] = React.useState({ lat: Lat, lng: Lng });
+  const [type, setType] = React.useState("Kite");
   // const [address, setAddress] = React.useState(null);
   // const [markerState, setMarkerState] = React.useState(null);
   // const [rows, setRows] = React.useState([]);
@@ -45,6 +47,7 @@ export default function Search({ Lat, Lng, zoom } = {}) {
 
     const markerGroup = new L.layerGroup().addTo(myMap);
     // setMarkerState(markerGroup);
+    const kite = L.layerGroup();
 
     // const searchControl = new GeoSearchControl({
     //   provider: new OpenStreetMapProvider(),
@@ -56,11 +59,13 @@ export default function Search({ Lat, Lng, zoom } = {}) {
     myMap.on("locationfound", async (e) => {
       setCenter({ lat: e.latlng.lat, lng: e.latlng.lng });
       L.circle(e.latlng, radius).addTo(markerGroup);
+      const sort = type;
+      console.log(sort);
 
       markerGroup.clearLayers();
       const { lat, lng } = myMap.getCenter();
       setCenter({ lat, lng });
-      L.circle([lat, lng], radius).addTo(markerGroup);
+      // L.circle([lat, lng], radius).addTo(markerGroup);
 
       // adding the markers from the db
       const data = await fetchFakeData({ lat: lat, lng: lng, radius: radius });
@@ -79,43 +84,24 @@ export default function Search({ Lat, Lng, zoom } = {}) {
               "</p>"
           );
         },
+        style: (feature) => {
+          switch (feature.properties.type) {
+            case "Bike":
+              return { color: "#0000ff" };
+            case "Kite":
+              return { color: "#ff0000" };
+
+            default:
+              return { color: "#000000" };
+          }
+        },
+        filter: (feature) => {
+          return feature.properties.type === sort;
+        },
       }).addTo(markerGroup);
 
-      // L.geoJSON()
-      //   .addData(data.features, {
-      //     style: (feature) => {
-      //       switch (feature.properties.type) {
-      //         case "bike":
-      //           return { color: "#0000ff" };
-      //         case "kite":
-      //           return { color: "#ff0000" };
-      //         // default:
-      //       }
-      //     },
-      //   })
-      //   .addTo(markerGroup);
-
       // myDataLayer.bindPopup("hi").on("click", () => console.log("ici"));
-
-      // L.geoJSON(data.features, {
-      //   filter: (feature) => {
-      //     return feature.properties.type === "kite";
-      //   },
-      // }).addTo(myDataLayer);
-
-      // L.geoJSON(data.features, {
-      //   filter: (feature) => {},
-      // });
     });
-
-    function onEachFeature(feature, layer) {
-      if (feature.properties && feature.properties.popupContent) {
-        layer.bindPopup(feature.properties.username);
-      }
-    }
-    // or
-    // const myLayer = L.geoJSON().addTo(myMap);
-    // myLayer.addData(geojsonFeature);
 
     // const searchControl = new esriGeocode.geosearch().addTo(myMap);
     // const resultGroup = new L.layerGroup().addTo(myMap);
@@ -154,7 +140,7 @@ export default function Search({ Lat, Lng, zoom } = {}) {
     // });
 
     return () => myMap.remove();
-  }, []);
+  }, [type]);
 
   // async function reverseGeocode(gps) {
   //   esriGeocode
@@ -170,9 +156,14 @@ export default function Search({ Lat, Lng, zoom } = {}) {
   //     });
   // }
 
+  function handleTypeChange(e) {
+    setType(e.target.value);
+  }
+
   return (
     <>
       <div id="map"></div>;
+      <SelectType type={type} onTypeChange={handleTypeChange} />
     </>
   );
 }

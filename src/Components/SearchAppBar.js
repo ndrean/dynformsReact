@@ -224,7 +224,7 @@ export default function SearchAppBar() {
             noWrap
             style={{ fontSize: 24, fontWeight: 800 }}
           >
-            DownwinD
+            OutDoors
           </Typography>
 
           <div className={classes.search}>
