@@ -4,8 +4,7 @@ import Layout from "./Layout";
 import { ReactComponent as Logo } from "./images/kitesurfing.svg";
 // import Logo from "./Components/logo"; IDEM ?
 import Downwind from "./Downwind";
-
-import Geoloc from "./Geoloc";
+import { Geoloc } from "./Geoloc";
 import Lmap from "./MapLeaf";
 import Search from "./Search";
 

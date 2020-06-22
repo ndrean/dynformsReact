@@ -11,6 +11,7 @@ import { basemapLayer } from "esri-leaflet";
 import useConfigureLeaflet from "./useConfigureLeaflet";
 // import { Map, TileLayer } from "react-leaflet";
 import Button from "@material-ui/core/Button";
+import Loader from "./Loader.js";
 // import { geojsonFeature } from "./mydata";
 
 useConfigureLeaflet();
@@ -20,6 +21,7 @@ export default function Lmap({ Lat, Lng, zoom } = {}) {
   // const [longitude, setLongitude] = React.useState(Lng);
   const [point, setPoint] = React.useState({ lat: Lat, lng: Lng });
   const [address, setAddress] = React.useState(null);
+  const [isLoading, setIsLoading] = React.useState(true);
   // const [keep, setKeep] = React.useState(false);
   // const [Zoom, setZoom] = React.useState(zoom);
   // const [mapState, setMapState] = React.useState(null);
@@ -37,7 +39,7 @@ export default function Lmap({ Lat, Lng, zoom } = {}) {
       attribution:
         '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
     });
-
+    myMap.on("load", () => setIsLoading(false));
     const markerGroup = new L.layerGroup().addTo(myMap);
     setMarkerState(markerGroup);
     L.marker([Lat, Lng]).addTo(markerGroup);
@@ -133,8 +135,7 @@ export default function Lmap({ Lat, Lng, zoom } = {}) {
         longitude={parseFloat(point.lng).toFixed(4)}
         address={JSON.stringify(address)}
       />
-
-      <div id="map"></div>
+      <div id="map">{isLoading && <Loader />} </div>;
       <PointsTable rows={rows} onRowRemove={handleRowRemove} />
       <Button
         variant="contained"

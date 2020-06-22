@@ -5,7 +5,7 @@
 
 const fetchFakeData = ({ lat, lng, radius }) => {
   function getRandomCoords({ lng, lat, radius }) {
-    const r = 0.4 * Math.sqrt(Math.random());
+    const r = 0.1 * Math.sqrt(Math.random());
     const theta = Math.random() * 2 * Math.PI;
     const rlat = lat + r * Math.cos(theta);
     const rlng = lng + r * Math.sin(theta);
@@ -13,7 +13,7 @@ const fetchFakeData = ({ lat, lng, radius }) => {
   }
 
   const newFeaturesList = [];
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < 30; i++) {
     const id = i;
     const [dlng, dlat] = getRandomCoords({ lat, lng, radius });
 

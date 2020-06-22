@@ -10,6 +10,7 @@ import { GeoSearchControl, OpenStreetMapProvider } from "leaflet-geosearch";
 import useConfigureLeaflet from "./useConfigureLeaflet";
 
 import SelectType from "./SelectType";
+import Loader from "./Loader.js";
 // import { geojsonFeature } from "./mydata";
 import fetchFakeData from "./fakeFetch";
 // import { map } from "mobx-state-tree/dist/internal";
@@ -22,6 +23,7 @@ export default function Search({ Lat, Lng, zoom } = {}) {
   // const [longitude, setLongitude] = React.useState(Lng);
   const [center, setCenter] = React.useState({ lat: Lat, lng: Lng });
   const [type, setType] = React.useState("Kite");
+  const [isLoading, setIsLoading] = React.useState(true);
   // const [address, setAddress] = React.useState(null);
   // const [markerState, setMarkerState] = React.useState(null);
   // const [rows, setRows] = React.useState([]);
@@ -55,6 +57,18 @@ export default function Search({ Lat, Lng, zoom } = {}) {
     //   autoCompleteDelay: 250,
     // });
     // myMap.addControl(searchControl);
+    // <LayerGroup>
+    //   <SelectType type={type} onTypeChange={handleTypeChange} />
+    // </LayerGroup>;
+    const selectbox = L.control({ position: "topright" });
+    selectbox.onAdd = (map) => {
+      const div = L.DomUtil.create("div");
+      div.innerHTML = <p>ICI</p>;
+      return div;
+    };
+    selectbox.addTo(myMap);
+
+    myMap.on("load", () => setIsLoading(false));
 
     myMap.on("locationfound", async (e) => {
       setCenter({ lat: e.latlng.lat, lng: e.latlng.lng });
@@ -74,15 +88,15 @@ export default function Search({ Lat, Lng, zoom } = {}) {
 
       L.geoJSON(data.features, {
         onEachFeature: (feature, layer) => {
-          layer.bindPopup(
-            "<h4>" +
-              dateFormat(feature.properties.dateStart, "dd-mm-yy") +
-              "->" +
-              dateFormat(feature.properties.dateEnd, "dd-mm-yy") +
-              "</h4> <p> # participants:" +
-              feature.properties.nbParticipants +
-              "</p>"
-          );
+          const html =
+            "<h4> Date, starting :" +
+            dateFormat(feature.properties.dateStart, "dd-mm-yy") +
+            ", ending: " +
+            dateFormat(feature.properties.dateEnd, "dd-mm-yy") +
+            "</h4> <p> # participants:" +
+            feature.properties.nbParticipants +
+            "</p>";
+          layer.bindPopup(html);
         },
         style: (feature) => {
           switch (feature.properties.type) {
@@ -97,6 +111,9 @@ export default function Search({ Lat, Lng, zoom } = {}) {
         },
         filter: (feature) => {
           return feature.properties.type === sort;
+        },
+        pointToLAyer: (feature, latlng) => {
+          return L.marker();
         },
       }).addTo(markerGroup);
 
@@ -162,7 +179,7 @@ export default function Search({ Lat, Lng, zoom } = {}) {
 
   return (
     <>
-      <div id="map"></div>;
+      <div id="map">{isLoading && <Loader />} </div>;
       <SelectType type={type} onTypeChange={handleTypeChange} />
     </>
   );

@@ -1,6 +1,7 @@
 import React from "react";
+import PositionContext from "./PositionContext";
 
-export default function Geoloc(props) {
+function Geoloc(props) {
   const [accept, setAccept] = React.useState(false);
   const [pos, setPos] = React.useState({});
   React.useEffect(() => {
@@ -11,6 +12,7 @@ export default function Geoloc(props) {
             Lat: latitude.toFixed(2),
             Lng: longitude.toFixed(2),
           });
+
           localStorage.setItem(
             "localPosition",
             JSON.stringify({
@@ -39,6 +41,9 @@ export default function Geoloc(props) {
           Your position is: latitude: {pos.Lat} et Longitude: {pos.Lng}{" "}
         </p>
       )}
+      {accept && <PositionContext.Provider value={pos} />}
     </>
   );
 }
+
+export { Geoloc };
