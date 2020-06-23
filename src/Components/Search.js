@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
+import { divIcon } from "leaflet";
 import { basemapLayer } from "esri-leaflet";
 
 // import * as esriGeocode from "esri-leaflet-geocoder";
@@ -11,18 +12,28 @@ import useConfigureLeaflet from "./useConfigureLeaflet";
 
 import SelectType from "./SelectType";
 import Loader from "./Loader.js";
-// import { geojsonFeature } from "./mydata";
+import "../App.css";
+import { blueIcon, redIcon, greenIcon } from "./icons";
+import { geojsonData } from "./mydata";
 import fetchFakeData from "./fakeFetch";
 // import { map } from "mobx-state-tree/dist/internal";
 useConfigureLeaflet();
 
 const radius = 40_000;
 
+const icon = L.divIcon({
+  className: "custom-div-icon",
+  html:
+    "<div style='background-color:#4838cc;' class='marker-pin'></div><i class='fa fa-camera awesome'>",
+  iconSize: [30, 42],
+  iconAnchor: [15, 42],
+});
+
 export default function Search({ Lat, Lng, zoom } = {}) {
   // const [latitude, setLatitude] = React.useState(Lat);
   // const [longitude, setLongitude] = React.useState(Lng);
   const [center, setCenter] = React.useState({ lat: Lat, lng: Lng });
-  const [type, setType] = React.useState("Kite");
+  const [activity, setActivity] = React.useState("Kite");
   const [isLoading, setIsLoading] = React.useState(true);
   // const [address, setAddress] = React.useState(null);
   // const [markerState, setMarkerState] = React.useState(null);
@@ -35,7 +46,9 @@ export default function Search({ Lat, Lng, zoom } = {}) {
   };
 
   React.useEffect(() => {
-    const myMap = L.map("map").locate({ setView: true, maxZoom: 8 });
+    const myMap = L.map("map")
+      .locate({ setView: true, maxZoom: 10 })
+      .on("load", () => setIsLoading(false));
 
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       attribution:
@@ -49,7 +62,6 @@ export default function Search({ Lat, Lng, zoom } = {}) {
 
     const markerGroup = new L.layerGroup().addTo(myMap);
     // setMarkerState(markerGroup);
-    const kite = L.layerGroup();
 
     // const searchControl = new GeoSearchControl({
     //   provider: new OpenStreetMapProvider(),
@@ -57,130 +69,87 @@ export default function Search({ Lat, Lng, zoom } = {}) {
     //   autoCompleteDelay: 250,
     // });
     // myMap.addControl(searchControl);
+
     // <LayerGroup>
     //   <SelectType type={type} onTypeChange={handleTypeChange} />
     // </LayerGroup>;
+
     const selectbox = L.control({ position: "topright" });
-    selectbox.onAdd = (map) => {
+    selectbox.onAdd = (myMap) => {
       const div = L.DomUtil.create("div");
       div.innerHTML = <p>ICI</p>;
       return div;
     };
     selectbox.addTo(myMap);
 
-    myMap.on("load", () => setIsLoading(false));
-
     myMap.on("locationfound", async (e) => {
       setCenter({ lat: e.latlng.lat, lng: e.latlng.lng });
       L.circle(e.latlng, radius).addTo(markerGroup);
-      const sort = type;
-      console.log(sort);
 
       markerGroup.clearLayers();
       const { lat, lng } = myMap.getCenter();
-      setCenter({ lat, lng });
+      // setCenter({ lat, lng });
       // L.circle([lat, lng], radius).addTo(markerGroup);
 
-      // adding the markers from the db
-      const data = await fetchFakeData({ lat: lat, lng: lng, radius: radius });
+      const data = await fetchFakeData({
+        lat: lat,
+        lng: lng,
+        radius: radius,
+        activity: activity,
+      });
 
       const dateFormat = require("dateformat");
 
-      L.geoJSON(data.features, {
-        onEachFeature: (feature, layer) => {
-          const html =
-            "<h4> Date, starting :" +
-            dateFormat(feature.properties.dateStart, "dd-mm-yy") +
-            ", ending: " +
-            dateFormat(feature.properties.dateEnd, "dd-mm-yy") +
-            "</h4> <p> # participants:" +
-            feature.properties.nbParticipants +
-            "</p>";
-          layer.bindPopup(html);
-        },
-        style: (feature) => {
-          switch (feature.properties.type) {
+      L.geoJSON(data, {
+        pointToLayer: (feature, latlng) => {
+          switch (feature.properties.activity) {
             case "Bike":
-              return { color: "#0000ff" };
+              return L.marker(latlng, { icon: redIcon });
             case "Kite":
-              return { color: "#ff0000" };
-
+              return L.marker(latlng, { icon: blueIcon });
             default:
-              return { color: "#000000" };
+              return L.marker(latlng, { icon: greenIcon });
           }
         },
-        filter: (feature) => {
-          return feature.properties.type === sort;
-        },
-        pointToLAyer: (feature, latlng) => {
-          return L.marker();
+        // filter: (feature) => {
+        //   return feature.properties.activity === activity;
+        // },
+        onEachFeature: (feature, layer) => {
+          if (feature) {
+            let html =
+              "<h4> Starting :" +
+              dateFormat(feature.properties.dateStart, "dd-mm-yy") +
+              ", Ending: " +
+              dateFormat(feature.properties.dateEnd, "dd-mm-yy") +
+              "</h4>" +
+              "<h5> Organized by: " +
+              feature.properties.username +
+              "</h5>" +
+              "<p> nb participants:" +
+              feature.properties.nbParticipants +
+              "</p>" +
+              "<h4>" +
+              feature.properties.address +
+              "</h4>";
+            layer.bindPopup(html);
+          }
         },
       }).addTo(markerGroup);
 
-      // myDataLayer.bindPopup("hi").on("click", () => console.log("ici"));
+      // myLayer.bindPopup("hi").on("click", () => console.log("ici"));
     });
 
-    // const searchControl = new esriGeocode.geosearch().addTo(myMap);
-    // const resultGroup = new L.layerGroup().addTo(myMap);
-    // searchControl.on("results", (e) => {
-    //   L.marker(e.latlng).addTo(markerGroup);
-    //   setLatitude(e.latlng.lat.toFixed(4));
-    //   setLongitude(e.latlng.lng.toFixed(4));
-    //   setPoint({ lat: e.latlng.lat.toFixed(4), lng: e.latlng.lng.toFixed(4) });
-    //   setRows((prev) => {
-    //     return [
-    //       ...prev,
-    //       {
-    //         address: {
-    //           Country: e.results[0].properties.Country,
-    //           Address: e.results[0].properties.ShortLabel,
-    //           City: e.results[0].properties.City,
-    //         },
-
-    //         point: {
-    //           lat: e.latlng.lat.toFixed(4),
-    //           lng: e.latlng.lng.toFixed(4),
-    //         },
-    //       },
-    //     ];
-    //   });
-    //   // resultGroup.clearLayers();
-    // });
-
-    // myMap.on("click", (e) => {
-    //   markerGroup.clearLayers();
-    //   setPoint({ lat: e.latlng.lat.toFixed(4), lng: e.latlng.lng.toFixed(4) });
-
-    //   L.marker(e.latlng).addTo(markerGroup);
-    //   reverseGeocode(e.latlng);
-    //   // setZoom(e.target._zoom);
-    // });
-
     return () => myMap.remove();
-  }, [type]);
+  }, [activity]);
 
-  // async function reverseGeocode(gps) {
-  //   esriGeocode
-  //     .geocodeService()
-  //     .reverse()
-  //     .latlng(gps)
-  //     .run((error, result) => {
-  //       if (error) return alert("not found");
-  //       const {
-  //         address: { CountryCode, ShortLabel, City },
-  //       } = result;
-  //       setAddress({ Country: CountryCode, City: City, Address: ShortLabel });
-  //     });
-  // }
-
-  function handleTypeChange(e) {
-    setType(e.target.value);
+  function handleActivityChange(e) {
+    setActivity(e.target.value);
   }
 
   return (
     <>
-      <div id="map">{isLoading && <Loader />} </div>;
-      <SelectType type={type} onTypeChange={handleTypeChange} />
+      <SelectType activity={activity} onActivityChange={handleActivityChange} />
+      <div id="map">{isLoading && <Loader />} </div>
     </>
   );
 }

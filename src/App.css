@@ -73,3 +73,18 @@
 .mapboxgl-ctrl-geocoder {
   min-width: 100%;
 }
+
+.custom-div-icon i {
+  position: absolute;
+  width: 22px;
+  font-size: 22px;
+  left: 0;
+  right: 0;
+  margin: 10px auto;
+  text-align: center;
+}
+
+.custom-div-icon i.awesome {
+  margin: 12px auto;
+  font-size: 17px;
+}

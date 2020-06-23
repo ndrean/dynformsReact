@@ -28,7 +28,7 @@ export default function Lmap({ Lat, Lng, zoom } = {}) {
   const [markerState, setMarkerState] = React.useState(null);
   const [rows, setRows] = React.useState([]);
 
-  React.useLayoutEffect(() => {
+  React.useEffect(() => {
     const myMap = L.map("map").locate({ setView: true, maxZoom: 7 });
     myMap.on("onlocationerror", (e) => alert(e.message));
     // .setView([Lat, Lng], Zoom); //|| "./images/WesternEurpoe.png";
@@ -81,8 +81,8 @@ export default function Lmap({ Lat, Lng, zoom } = {}) {
     myMap.on("click", (e) => {
       markerGroup.clearLayers();
       setPoint({ lat: e.latlng.lat.toFixed(4), lng: e.latlng.lng.toFixed(4) });
-      L.marker(e.latlng).addTo(markerGroup);
       reverseGeocode(e.latlng);
+      L.marker(e.latlng).addTo(markerGroup);
     });
 
     return () => myMap.remove();

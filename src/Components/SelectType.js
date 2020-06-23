@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SelectType({ type, onTypeChange }) {
+export default function SelectType({ activity, onActivityChange }) {
   const classes = useStyles();
 
   return (
@@ -24,8 +24,8 @@ export default function SelectType({ type, onTypeChange }) {
       <Select
         labelId="demo-simple-select-label"
         id="demo-simple-select"
-        value={type}
-        onChange={onTypeChange}
+        value={activity}
+        onChange={onActivityChange}
       >
         <MenuItem value="Kite">Kite</MenuItem>
         <MenuItem value="Canoe">Canoe</MenuItem>
