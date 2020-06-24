@@ -6,7 +6,7 @@ import { divIcon } from "leaflet";
 import { basemapLayer } from "esri-leaflet";
 
 // import * as esriGeocode from "esri-leaflet-geocoder";
-import { GeoSearchControl, OpenStreetMapProvider } from "leaflet-geosearch";
+// import { GeoSearchControl, OpenStreetMapProvider } from "leaflet-geosearch";
 
 import useConfigureLeaflet from "./useConfigureLeaflet";
 
@@ -14,8 +14,9 @@ import SelectType from "./SelectType";
 import Loader from "./Loader.js";
 import "../App.css";
 import { blueIcon, redIcon, greenIcon } from "./icons";
-import { geojsonData } from "./mydata";
+// import { geojsonData } from "./mydata";
 import fetchFakeData from "./fakeFetch";
+
 // import { map } from "mobx-state-tree/dist/internal";
 useConfigureLeaflet();
 
@@ -29,15 +30,14 @@ const icon = L.divIcon({
   iconAnchor: [15, 42],
 });
 
+const dateFormat = require("dateformat");
+
 export default function Search({ Lat, Lng, zoom } = {}) {
-  // const [latitude, setLatitude] = React.useState(Lat);
-  // const [longitude, setLongitude] = React.useState(Lng);
-  const [center, setCenter] = React.useState({ lat: Lat, lng: Lng });
   const [activity, setActivity] = React.useState("Kite");
   const [isLoading, setIsLoading] = React.useState(true);
-  // const [address, setAddress] = React.useState(null);
-  // const [markerState, setMarkerState] = React.useState(null);
-  // const [rows, setRows] = React.useState([]);
+  // const [val, setVal] = React.useState(false);
+  const [activities, setActivities] = React.useState([]);
+  // const [ids, setIds] = React.useState([]);
 
   Search.propTypes = {
     Lat: PropTypes.number,
@@ -55,50 +55,41 @@ export default function Search({ Lat, Lng, zoom } = {}) {
         '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
     }).addTo(myMap);
 
-    // basemapLayer("Streets").addTo(myMap);
-    // setView([point.lat, point.lng], Zoom);
-
     myMap.on("onlocationerror", (e) => alert(e.message));
 
-    const markerGroup = new L.layerGroup().addTo(myMap);
-    // setMarkerState(markerGroup);
+    const markerLayer = new L.layerGroup().addTo(myMap);
 
-    // const searchControl = new GeoSearchControl({
-    //   provider: new OpenStreetMapProvider(),
-    //   style: "button",
-    //   autoCompleteDelay: 250,
-    // });
-    // myMap.addControl(searchControl);
-
-    // <LayerGroup>
-    //   <SelectType type={type} onTypeChange={handleTypeChange} />
-    // </LayerGroup>;
-
-    const selectbox = L.control({ position: "topright" });
-    selectbox.onAdd = (myMap) => {
+    const selectActivity = L.control({ position: "topright" });
+    selectActivity.onAdd = function () {
       const div = L.DomUtil.create("div");
-      div.innerHTML = <p>ICI</p>;
+      const html =
+        "<select id=" +
+        "activity" +
+        "><option value=" +
+        "Kite" +
+        ">Kite</option><option value=" +
+        "Canoe" +
+        ">Canoe</option><option value=" +
+        "Bike" +
+        ">Bike</option></select>";
+      div.innerHTML = html;
+
       return div;
     };
-    selectbox.addTo(myMap);
+    selectActivity.addTo(myMap);
+    document.querySelector("#activity").addEventListener("change", (e) => {
+      setActivity(e.target.value);
+    });
 
-    myMap.on("locationfound", async (e) => {
-      setCenter({ lat: e.latlng.lat, lng: e.latlng.lng });
-      L.circle(e.latlng, radius).addTo(markerGroup);
-
-      markerGroup.clearLayers();
+    myMap.on("locationfound", async () => {
+      markerLayer.clearLayers();
       const { lat, lng } = myMap.getCenter();
-      // setCenter({ lat, lng });
-      // L.circle([lat, lng], radius).addTo(markerGroup);
-
       const data = await fetchFakeData({
         lat: lat,
         lng: lng,
         radius: radius,
         activity: activity,
       });
-
-      const dateFormat = require("dateformat");
 
       L.geoJSON(data, {
         pointToLayer: (feature, latlng) => {
@@ -116,7 +107,7 @@ export default function Search({ Lat, Lng, zoom } = {}) {
         // },
         onEachFeature: (feature, layer) => {
           if (feature) {
-            let html =
+            const element =
               "<h4> Starting :" +
               dateFormat(feature.properties.dateStart, "dd-mm-yy") +
               ", Ending: " +
@@ -131,12 +122,106 @@ export default function Search({ Lat, Lng, zoom } = {}) {
               "<h4>" +
               feature.properties.address +
               "</h4>";
-            layer.bindPopup(html);
+
+            const input = `<label for="activity">Select!</label>
+              <input type="checkbox" id="activity_${feature.properties.id}" value="Select"/>`;
+
+            const content = L.DomUtil.create("div");
+            content.innerHTML = element + input;
+            // const popup = L.popup().setPopupContent(element+input);
+            const popup = layer.bindPopup(content).openPopup();
+            if (popup) {
+              popup.on("popupclose", (e) => {
+                const checkbox = document.querySelector(
+                  'input[type="checkbox"]'
+                );
+                if (checkbox) {
+                  checkbox.addEventListener(
+                    "change",
+                    handleChange(checkbox, feature),
+                    {
+                      once: true,
+                      passive: true,
+                    }
+                  );
+                }
+                function handleChange(checkbox, feature) {
+                  console.log("change");
+                  if (
+                    checkbox.checked &&
+                    activities.find(
+                      (activity) => activity.id === feature.properties.id
+                    ) === undefined
+                  ) {
+                    console.log(
+                      activities.find(
+                        (activity) => activity.id === feature.properties.id
+                      )
+                    );
+                    setActivities((previous) => {
+                      return [
+                        ...previous,
+                        {
+                          id: feature.properties.id,
+                          date: feature.properties.dateStart,
+                          owner: feature.properties.username,
+                        },
+                      ];
+                    });
+                  } else if (!checkbox.checked) {
+                    if (activities === []) {
+                      setActivities([]);
+                    } else {
+                      setActivities(
+                        activities.filter((activity) => {
+                          if (activity.id !== feature.properties.id)
+                            return activity;
+                        })
+                      );
+                    }
+                  }
+                }
+              });
+            }
           }
         },
-      }).addTo(markerGroup);
+      }).addTo(markerLayer);
+      //
 
-      // myLayer.bindPopup("hi").on("click", () => console.log("ici"));
+      // checkbox.addEventListener("click", () => {
+      // if (checkbox.checked) {
+      //   // && activities.find((activity) => activity.id === feature.properties.id) === undefined)
+      //   if (
+      //     activities.find(
+      //       (activity) => activity.id === feature.properties.id
+      //     )
+      //   ) {
+      //     return activities;
+      //   } else {
+      //     setActivities((previous) => {
+      //       return [
+      //         ...previous,
+      //         {
+      //           id: feature.properties.id,
+      //           date: feature.properties.dateStart,
+      //           owner: feature.properties.username,
+      //           status: checkbox.checked,
+      //         },
+      //       ];
+      //     });
+      //   }
+      // } else if (!checkbox.checked) {
+      //   // setVal(false);
+      //
+      // }
+      //       });
+      //     }
+      //   },
+      // }).addTo(markerGroup);
+
+      // myMap.on("click", (e) => {
+      //   console.log(e);
+      // });
     });
 
     return () => myMap.remove();
@@ -150,6 +235,12 @@ export default function Search({ Lat, Lng, zoom } = {}) {
     <>
       <SelectType activity={activity} onActivityChange={handleActivityChange} />
       <div id="map">{isLoading && <Loader />} </div>
+      {activities &&
+        activities.map((a) => (
+          <p key={a.id}>
+            {a.id}, {a.owner}, {dateFormat(a.date, "dddd, dd/mm/yy")}{" "}
+          </p>
+        ))}
     </>
   );
 }

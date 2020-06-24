@@ -45,6 +45,7 @@ const fetchFakeData = ({ lat, lng, radius, activity }) => {
           dateEnd: dateEnd,
           id: id,
           nbParticipants: id,
+          participants: [{ idp: 2 }, { idp: 3 }, { idp: 4 }],
           address: `Random Point #${id}`,
         },
       });
@@ -66,6 +67,7 @@ const fetchFakeData = ({ lat, lng, radius, activity }) => {
           id: id,
           nbParticipants: id,
           address: `Random Point #${id}`,
+          participants: [{ idp: 1 }, { idp: 2 }, { idp: 3 }],
         },
       });
     }
@@ -86,9 +88,5 @@ const fetchFakeData = ({ lat, lng, radius, activity }) => {
     }
   );
 };
-
-/*
-Generates a random point within 0.025 radius of map center coordinates.
-*/
 
 export default fetchFakeData;
