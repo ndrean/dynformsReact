@@ -4,19 +4,17 @@
  */
 
 const fetchFakeData = ({ lat, lng, radius, activity }) => {
-  function getRandomCoords({ lng, lat, radius }) {
-    const r = 0.1 * Math.sqrt(Math.random());
-    const theta = Math.random() * 2 * Math.PI;
-    const rlat = lat + r * Math.cos(theta);
-    const rlng = lng + r * Math.sin(theta);
+  function getRandomCoords({ lng, lat, i }) {
+    const rlat = lat + 0.01 * i;
+    const rlng = lng + 0.01 * i;
     return [rlng, rlat];
   }
 
   const newFeaturesList = [];
   const newFeaturesPointList = [];
-  for (let i = 0; i < 30; i++) {
+  for (let i = 0; i < 11; i++) {
     const id = i;
-    const [dlng, dlat] = getRandomCoords({ lat, lng, radius });
+    const [dlng, dlat] = getRandomCoords({ lat, lng, i });
 
     const dateStart = new Date("2020-09-01") + i;
     const dateEnd = dateStart;
@@ -30,6 +28,7 @@ const fetchFakeData = ({ lat, lng, radius, activity }) => {
       }
     };
 
+    // search by activity:
     if (setType(i) === activity) {
       newFeaturesPointList.push({
         type: "Feature",
@@ -47,8 +46,11 @@ const fetchFakeData = ({ lat, lng, radius, activity }) => {
           nbParticipants: id,
           participants: [{ idp: 2 }, { idp: 3 }, { idp: 4 }],
           address: `Random Point #${id}`,
+          ischecked: false,
         },
       });
+
+      // construct  'all'
       newFeaturesList.push({
         type: "Feature",
         geometry: {

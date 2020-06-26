@@ -29,8 +29,10 @@ export default function Lmap({ Lat, Lng, zoom } = {}) {
   const [rows, setRows] = React.useState([]);
 
   React.useEffect(() => {
-    const myMap = L.map("map").locate({ setView: true, maxZoom: 7 });
-    myMap.on("onlocationerror", (e) => alert(e.message));
+    const myMap = L.map("map")
+      .locate({ setView: true, maxZoom: 7 })
+      .on("onlocationerror", (e) => alert(e.message))
+      .on("load", () => setIsLoading(false));
     // .setView([Lat, Lng], Zoom); //|| "./images/WesternEurpoe.png";
 
     basemapLayer("Streets").addTo(myMap);
@@ -39,10 +41,32 @@ export default function Lmap({ Lat, Lng, zoom } = {}) {
       attribution:
         '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
     });
-    myMap.on("load", () => setIsLoading(false));
+
     const markerGroup = new L.layerGroup().addTo(myMap);
     setMarkerState(markerGroup);
     L.marker([Lat, Lng]).addTo(markerGroup);
+
+    // const displaySearch = L.control({ position: "topright" });
+    // displaySearch.onAdd = function () {
+    //   const form = L.DomUtil.create("form");
+    //   const html = `
+    //     <form id="display">
+    //     <label for=lat">Latitude</label>
+    //     <input type="number" id="lat" "readonly value=${point.lat}/>
+    //     <label for=lng">Longitude</label>
+    //     <input type="number" id="lng" "readonly value=${point.lng}/>
+    //     <label for="address">Latitude</label>
+    //     <textarea id="address" "readonly value=${address}>Address</textarea>
+    //     <input type="submit" value="Store"/></form>`;
+    //   form.innerHTML = html;
+    //   return form;
+    // };
+    // displaySearch.addTo(myMap);
+    // document
+    //   .querySelector(".leaflet-control")
+    //   .addEventListener("submit", (e) => {
+    //     e.preventDefault();
+    //   });
 
     // adding the markers from the db
     //L.geoJSON(geojsonFeature).addTo(myMap);
