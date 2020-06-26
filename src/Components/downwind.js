@@ -68,6 +68,7 @@ export default function Downwind() {
     for (let val of formData.values()) {
       console.log(val);
     }
+    return formData;
   }
 
   function handleRemoveKiter(index) {

@@ -87,8 +87,8 @@ export const routes = [
       const { Lat, Lng, zoom = 7 } = (await JSON.parse(
         localStorage.getItem("localPosition")
       )) || {
-        Lat: 47.2,
-        Lng: -1.5,
+        Lat: 45.2,
+        Lng: 0,
       };
 
       return (
@@ -106,8 +106,8 @@ export const routes = [
       const { Lat, Lng, zoom = 7 } = (await JSON.parse(
         localStorage.getItem("localPosition")
       )) || {
-        Lat: 47.2,
-        Lng: -1.5,
+        Lat: 45.2,
+        Lng: 0,
       };
 
       return (

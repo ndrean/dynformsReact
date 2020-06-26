@@ -1,3 +1,5 @@
+// https://cherniavskii.com/using-leaflet-in-react-apps-with-react-hooks/
+
 import React from "react";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
@@ -8,6 +10,7 @@ import Loader from "./Loader.js";
 import "../App.css";
 import { blueIcon, redIcon, greenIcon } from "./icons";
 import fetchFakeData from "./fakeFetch";
+//import { myData } from "./mydata";
 
 useConfigureLeaflet();
 
@@ -54,6 +57,7 @@ export default function Search({ Lat, Lng, zoom } = {}) {
   const layerRef = React.useRef(null);
   React.useEffect(() => {
     layerRef.current = new L.featureGroup().addTo(mapRef.current);
+    return () => layerRef.current.remove();
   }, []);
 
   function setContent({ feature: feature, check: check }) {
@@ -62,21 +66,27 @@ export default function Search({ Lat, Lng, zoom } = {}) {
       : `<input type="checkbox" }/>`;
     const html =
       `
-          <p> nb participants: ${feature.properties.id} </p>
-          <p>Date Start : ${dateFormat(
-            feature.properties.dateStart,
-            "dddd/dd/mm/yy"
-          )}</p>
-          <label>Select</label>` + input;
+        <p> nb participants: ${feature.properties.id} </p>
+        <p>Date Start : ${dateFormat(
+          feature.properties.dateStart,
+          "dddd/dd/mm/yy"
+        )}</p>
+        <label>Select</label>` + input;
     return html;
   }
 
-  function handlePopup(feature) {
+  const handlePopupCallback = React.useCallback(handlePopup, [
+    activities,
+    data,
+  ]);
+  // destructure the feature = {feature:{properties:{...}},geometry...}
+  function handlePopup({
+    properties: { id, activity, username, dateStart },
+    ...rest
+  }) {
     const checkbox = document.body.querySelector('input[type="checkbox"]');
     if (checkbox) {
-      const checkActivity = data.find(
-        (a) => a.properties.id === feature.properties.id
-      );
+      const checkActivity = data.find((a) => a.properties.id === id);
       console.log(checkActivity === true, checkbox.checked);
 
       if (checkbox.checked && !checkActivity.properties.ischecked) {
@@ -84,29 +94,25 @@ export default function Search({ Lat, Lng, zoom } = {}) {
         setActivities([
           ...activities,
           {
-            id: feature.properties.id,
-            username: feature.properties.username,
-            dateStart: feature.properties.dateStart,
+            ...rest,
+            id: id,
+            activity: activity,
+            username: username,
+            dateStart: dateStart,
           },
         ]);
         setData((allData) => {
           const copy = [...allData];
-          const index = copy.findIndex(
-            (f) => f.properties.id === feature.properties.id
-          );
+          const index = copy.findIndex((f) => f.properties.id === id);
           copy[index].properties.ischecked = true;
           return copy;
         });
       } else if (!checkbox.checked && checkActivity.properties.ischecked) {
         console.log(2);
-        setActivities(
-          activities.filter((a) => a.id !== feature.properties.id) || []
-        );
+        setActivities(activities.filter((a) => a.id !== id) || []);
         setData((allData) => {
           const copy = [...allData];
-          const index = copy.findIndex(
-            (f) => f.properties.id === feature.properties.id
-          );
+          const index = copy.findIndex((f) => f.properties.id === id);
           copy[index].properties.ischecked = false;
           return copy;
         });
@@ -118,7 +124,24 @@ export default function Search({ Lat, Lng, zoom } = {}) {
     layerRef.current.clearLayers();
     L.geoJSON(data, {
       pointToLayer: function (feature, latlng) {
-        const marker = L.marker(latlng, { icon: greenIcon });
+        let marker = L.marker(latlng);
+        switch (feature.properties.activity) {
+          case "Bike":
+            marker = L.marker(latlng, {
+              icon: redIcon,
+            });
+            break;
+          case "Kite":
+            marker = L.marker(latlng, {
+              icon: blueIcon,
+            });
+            break;
+          default:
+            marker = L.marker(latlng, {
+              icon: greenIcon,
+            });
+        }
+        // const marker = L.marker(latlng, { icon: greenIcon });
         const content = L.DomUtil.create("div");
         content.innerHTML = setContent({
           feature: feature,
@@ -127,18 +150,28 @@ export default function Search({ Lat, Lng, zoom } = {}) {
         const popup = marker.bindPopup(content);
         if (popup) {
           popup.on("popupclose", () => {
-            handlePopup(feature);
+            handlePopupCallback(feature);
           });
         }
         return marker;
       },
     }).addTo(layerRef.current);
-  }, [data, activities]);
+  }, [data, activities, handlePopupCallback]);
 
   function handleActivityChange(e) {
     setActivity(e.target.value);
   }
 
+  function handleClick({
+    activity: {
+      geometry: { coordinates },
+    },
+  }) {
+    console.log(coordinates);
+    L.marker([coordinates[1], coordinates[0]], { icon: blueIcon }).addTo(
+      layerRef.current
+    );
+  }
   return (
     <>
       <SelectType activity={activity} onActivityChange={handleActivityChange} />
@@ -147,8 +180,11 @@ export default function Search({ Lat, Lng, zoom } = {}) {
       {activities &&
         activities.map((a) => (
           <p key={a.id}>
-            {a.id}, {dateFormat(a.dateStart, "dddd-dd/mm/yy")}, contact:{" "}
-            {a.username}
+            {" "}
+            <button onClick={() => handleClick({ activity: a })}>
+              {a.activity}, {a.id}, {a.dateStart}, contact: {a.username}
+            </button>
+            <button>Remove</button>
           </p>
         ))}
     </>

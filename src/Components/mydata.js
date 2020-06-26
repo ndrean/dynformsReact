@@ -1,99 +1,61 @@
-const geojsonData1 = {
+const myData = {
   type: "FeatureCollection",
   features: [
     {
       type: "Feature",
-      geometry: {
-        type: "LineString",
-        coordinates: [
-          [-35.2115, -5.7954],
-          [-38.7168, -3.6345], // !!!  lng, lat
-          [-44.2403, -2.5266],
-        ],
-      },
+      geometry: { type: "Point", coordinates: [0.32, 45.23] },
       properties: {
         activity: "Kite",
-        username: "Fred",
+        address: "Random Point #0",
+        dateEnd:
+          "Tue Sep 01 2020 02:00:00 GMT+0200 (Central European Summer Time)0",
+        dateStart:
+          "Tue Sep 01 2020 02:00:00 GMT+0200 (Central European Summer Time)0",
+        id: 0,
+        ischecked: false,
+        nbParticipants: 0,
+
         phone: 44123456789,
-        dateStart: new Date("2020-09-01"),
-        dateEnd: "",
-        id: 1,
-        nbParticipants: 1,
-        address: "toto",
+        username: "Fred",
       },
     },
     {
       type: "Feature",
-      geometry: {
-        type: "Point",
-        coordinates: [2.75, 45],
-      },
-      properties: {
-        activity: "Bike",
-        username: "Me",
-        phone: 33123456,
-        dateStart: new Date("2020-12-1"),
-        dateEnd: "",
-        id: 2,
-        nbParticipants: 2,
-        address: "toto",
-      },
-    },
-    {
-      type: "Feature",
-      geometry: {
-        type: "Point",
-        coordinates: [-0.37, 45.2],
-      },
-      properties: {
-        activity: "Bike",
-        username: "Me",
-        phone: 33123456,
-        dateStart: new Date("2020-12-1"),
-        id: 3,
-        nbParticipants: 3,
-        address: "bibi",
-      },
-    },
-  ],
-};
-const geojsonData = {
-  type: "FeatureCollection",
-  features: [
-    {
-      type: "Feature",
-      geometry: {
-        type: "Point",
-        coordinates: [2.75, 45],
-      },
+      geometry: { type: "Point", coordinates: [0.22, 45.13] },
       properties: {
         activity: "Kite",
-        username: "Me",
-        phone: 33123456,
-        dateStart: new Date("2020-12-1"),
-        dateEnd: "",
-        id: 2,
-        nbParticipants: 2,
-        address: "toto",
+        address: "Random Point #0",
+        dateEnd:
+          "Tue Sep 01 2020 02:00:00 GMT+0200 (Central European Summer Time)0",
+        dateStart:
+          "Tue Sep 01 2020 02:00:00 GMT+0200 (Central European Summer Time)0",
+        id: 1,
+        ischecked: false,
+        nbParticipants: 1,
+
+        phone: 44123456789,
+        username: "Fred",
       },
     },
     {
       type: "Feature",
-      geometry: {
-        type: "Point",
-        coordinates: [-0.37, 45.2],
-      },
+      geometry: { type: "Point", coordinates: [0.42, 45.33] },
       properties: {
         activity: "Bike",
-        username: "Me",
-        phone: 33123456,
-        dateStart: new Date("2020-12-1"),
-        id: 3,
-        nbParticipants: 3,
-        address: "bibi",
+        address: "Random Point #0",
+        dateEnd:
+          "Tue Sep 01 2020 02:00:00 GMT+0200 (Central European Summer Time)0",
+        dateStart:
+          "Tue Sep 01 2020 02:00:00 GMT+0200 (Central European Summer Time)0",
+        id: 2,
+        ischecked: false,
+        nbParticipants: 2,
+
+        phone: 44123456789,
+        username: "Fred",
       },
     },
   ],
 };
 
-export { geojsonData };
+export { myData };
