@@ -81,7 +81,7 @@ export default function Search({ Lat, Lng, zoom } = {}) {
 
       if (checkbox.checked && !checkActivity.properties.ischecked) {
         console.log(1);
-
+        setActivities([...activities, { id: feature.properties.id }]);
         setData((allData) => {
           const copy = [...allData];
           const index = copy.findIndex(
@@ -90,20 +90,19 @@ export default function Search({ Lat, Lng, zoom } = {}) {
           copy[index].properties.ischecked = true;
           return copy;
         });
-
-        // setActivities((prev) => [
-        //   ...prev,
-        //   {
-        //     id: feature.properties.id,
-        //     ischecked: true,
-        //   },
-        // ]);
       } else if (!checkbox.checked && checkActivity.properties.ischecked) {
         console.log(2);
-
-        setData((allData) =>
-          allData.filter((a) => a.properties.id !== feature.properties.id)
+        setActivities(
+          activities.filter((a) => a.id !== feature.properties.id) || []
         );
+        setData((allData) => {
+          const copy = [...allData];
+          const index = copy.findIndex(
+            (f) => f.properties.id === feature.properties.id
+          );
+          copy[index].properties.ischecked = false;
+          return copy;
+        });
       }
     }
   }
@@ -127,7 +126,7 @@ export default function Search({ Lat, Lng, zoom } = {}) {
         return marker;
       },
     }).addTo(layerRef.current);
-  }, [data]);
+  }, [data, activities]);
 
   function handleActivityChange(e) {
     setActivity(e.target.value);
@@ -137,7 +136,7 @@ export default function Search({ Lat, Lng, zoom } = {}) {
     <>
       <SelectType activity={activity} onActivityChange={handleActivityChange} />
       <div id="map">{isLoading && <Loader />} </div>
-      {activities && activities.map((a) => <span>{a.id}</span>)}
+      {activities && activities.map((a) => <span key={a.id}>{a.id}</span>)}
     </>
   );
 }
