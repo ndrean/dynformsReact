@@ -21,7 +21,6 @@ export default function Search({ Lat, Lng, zoom } = {}) {
   const [isLoading, setIsLoading] = React.useState(true);
   const [data, setData] = React.useState([]);
   const [activities, setActivities] = React.useState([]);
-  const [layer, setLayer] = React.useState(null);
 
   React.useEffect(() => {
     fetchFakeData({
@@ -58,17 +57,18 @@ export default function Search({ Lat, Lng, zoom } = {}) {
   }, []);
 
   function setContent({ feature: feature, check: check }) {
-    if (check) {
-      return `
+    const input = check
+      ? `<input type="checkbox" checked }/>`
+      : `<input type="checkbox" }/>`;
+    const html =
+      `
           <p> nb participants: ${feature.properties.id} </p>
-          <label>Select</label>
-          <input type="checkbox" checked/>`;
-    } else {
-      return `
-          <p> nb participants: ${feature.properties.id} </p>
-          <label>Select</label>
-          <input type="checkbox" }/>`;
-    }
+          <p>Date Start : ${dateFormat(
+            feature.properties.dateStart,
+            "dddd/dd/mm/yy"
+          )}</p>
+          <label>Select</label>` + input;
+    return html;
   }
 
   function handlePopup(feature) {
@@ -81,7 +81,14 @@ export default function Search({ Lat, Lng, zoom } = {}) {
 
       if (checkbox.checked && !checkActivity.properties.ischecked) {
         console.log(1);
-        setActivities([...activities, { id: feature.properties.id }]);
+        setActivities([
+          ...activities,
+          {
+            id: feature.properties.id,
+            username: feature.properties.username,
+            dateStart: feature.properties.dateStart,
+          },
+        ]);
         setData((allData) => {
           const copy = [...allData];
           const index = copy.findIndex(
@@ -136,7 +143,14 @@ export default function Search({ Lat, Lng, zoom } = {}) {
     <>
       <SelectType activity={activity} onActivityChange={handleActivityChange} />
       <div id="map">{isLoading && <Loader />} </div>
-      {activities && activities.map((a) => <span key={a.id}>{a.id}</span>)}
+      <p>Click on the marker and select/unselect and ask to join the event:</p>
+      {activities &&
+        activities.map((a) => (
+          <p key={a.id}>
+            {a.id}, {dateFormat(a.dateStart, "dddd-dd/mm/yy")}, contact:{" "}
+            {a.username}
+          </p>
+        ))}
     </>
   );
 }
