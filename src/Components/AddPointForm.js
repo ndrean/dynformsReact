@@ -51,6 +51,7 @@ export default function AddPointForm({
         value={address}
         rowsMin={3}
         rowsMax={4}
+        style={{ width: 150 }}
 
         // onChange={onAddressChange}
       />

@@ -147,7 +147,7 @@ export const SearchAppBar = observer(() => {
     >
       <MenuItem>
         <IconButton aria-label="show new notifications" color="inherit">
-          <Badge badgeContent={0} color="secondary">
+          <Badge badgeContent={Notifications.count} color="secondary">
             <NotificationsIcon />
           </Badge>
         </IconButton>

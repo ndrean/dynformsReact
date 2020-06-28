@@ -22,6 +22,7 @@ export default function Lmap({ Lat, Lng, zoom, mapRef } = {}) {
   const [address, setAddress] = React.useState(null);
   const [isLoading, setIsLoading] = React.useState(true);
   const [rows, setRows] = React.useState([]);
+  const [itinary, setItinary] = React.useState({});
 
   // mount the map
   const lmapRef = React.useRef(null);
@@ -70,9 +71,14 @@ export default function Lmap({ Lat, Lng, zoom, mapRef } = {}) {
 
     lmapRef.current.on("click", (e) => {
       markersRef.current.clearLayers();
-      setPoint({ lat: e.latlng.lat.toFixed(4), lng: e.latlng.lng.toFixed(4) });
+      setPoint({ lat: e.latlng.lat.toFixed(2), lng: e.latlng.lng.toFixed(2) });
       reverseGeocode(e.latlng);
-      L.marker(e.latlng).addTo(markersRef.current);
+
+      const marker = L.marker(e.latlng).addTo(markersRef.current);
+      // marker
+      //   .bindPopup(`<p>${JSON.stringify(address)}</p>`)
+      //   .openPopup()
+      //   .addTo(markersRef.current);
     });
     return () => markersRef.current.remove();
   }, []);
@@ -97,7 +103,6 @@ export default function Lmap({ Lat, Lng, zoom, mapRef } = {}) {
       lat: point.lat,
       lng: point.lng,
     });
-    //L.marker([point.lat, point.lng]).addTo(LlayerRef.current);
     setRows((prev) => {
       return [
         ...prev,
@@ -107,6 +112,15 @@ export default function Lmap({ Lat, Lng, zoom, mapRef } = {}) {
         },
       ];
     });
+  }
+
+  function postItinary() {
+    const formdata = new FormData();
+    const date = new Date().toDateString();
+    formdata.append("date", JSON.stringify(date));
+    rows.forEach((r, idx) => formdata.append("idx", JSON.stringify(r.point)));
+    setItinary(formdata);
+    return formdata;
   }
 
   function handleRowRemove(add) {
@@ -123,14 +137,8 @@ export default function Lmap({ Lat, Lng, zoom, mapRef } = {}) {
       />
       <div id="Lmap">{isLoading && <Loader />} </div>
       <PointsTable rows={rows} onRowRemove={handleRowRemove} />
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={() => {
-          return rows;
-        }}
-      >
-        Save
+      <Button variant="contained" color="primary" onClick={postItinary}>
+        Save Itinary
       </Button>
     </>
   );

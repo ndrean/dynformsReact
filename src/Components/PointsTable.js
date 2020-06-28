@@ -34,7 +34,7 @@ export default function PointsTable(props) {
           </TableHead>
           <TableBody>
             {props.rows.map(({ address, point: { lat, lng } }, index) => (
-              <TableRow key={address}>
+              <TableRow key={JSON.stringify([lat, lng])}>
                 <TableCell component="th" scope="row" align="left">
                   {JSON.stringify(address)}
                 </TableCell>

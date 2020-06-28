@@ -26,7 +26,7 @@ const setOfActivities = [
   { activity: "Bike", color: redIcon },
 ];
 
-const dateFormat = require("dateformat");
+//const dateFormat = require("dateformat");
 
 export default function Search({ Lat, Lng, zoom } = {}) {
   const [activity, setActivity] = React.useState("Kite");
@@ -133,10 +133,9 @@ export default function Search({ Lat, Lng, zoom } = {}) {
     const html =
       `
         <p> nb participants: ${feature.properties.id} </p>
-        <p>Date Start : ${dateFormat(
-          feature.properties.dateStart,
-          "dddd/dd/mm/yy"
-        )}</p>
+        <p>Date Start : ${new Date(
+          feature.properties.dateStart
+        ).toDateString()}</p>
         <label>Select</label>` + input;
     return html;
   }
@@ -214,7 +213,7 @@ export default function Search({ Lat, Lng, zoom } = {}) {
           <p key={a.id}>
             {" "}
             <button onClick={() => handleClick({ activity: a })}>
-              {a.activity}, {a.id}, {dateFormat(a.dateStart, "dddd-dd/mm/yy")},
+              {a.activity}, {a.id}, {new Date(a.dateStart).toDateString()},
               contact: {a.username}
             </button>
             <button onClick={(e) => handleRemove(e, { act: a })}>Remove</button>

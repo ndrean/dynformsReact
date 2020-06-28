@@ -49,6 +49,7 @@ export default function Downwind() {
   const [kiters, setKiters] = useState([newKiter]);
   const [trip, setTrip] = useState(newTrip);
 
+  const [data, setData] = useState([]);
   const [user, setUser] = useIdb("user", {
     name: "Fred",
     email: " star@hackit.js",
@@ -63,12 +64,10 @@ export default function Downwind() {
     setTrip({ ...trip });
     setKiters([...kiters]);
     const formData = new FormData();
+    formData.append("user", JSON.stringify(user));
     formData.append("trip", JSON.stringify(trip));
     formData.append("kiters", JSON.stringify(kiters));
-    for (let val of formData.values()) {
-      console.log(val);
-    }
-    return formData;
+    setData(formData);
   }
 
   function handleRemoveKiter(index) {

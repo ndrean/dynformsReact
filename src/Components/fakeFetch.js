@@ -16,7 +16,7 @@ const fetchFakeData = ({ lat, lng, radius, activity }) => {
     const id = i;
     const [dlng, dlat] = getRandomCoords({ lat, lng, i });
 
-    const dateStart = new Date("2020-09-01") + i;
+    const dateStart = new Date("2020-09-01");
     const dateEnd = dateStart;
     const setType = (i) => {
       if (i % 3 === 0) {
