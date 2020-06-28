@@ -1,6 +1,6 @@
 // https://cherniavskii.com/using-leaflet-in-react-apps-with-react-hooks/
 
-import React from "react";
+import React, { useEffect } from "react";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 
@@ -8,14 +8,21 @@ import useConfigureLeaflet from "./useConfigureLeaflet";
 import SelectType from "./SelectType";
 import Loader from "./Loader.js";
 import "../App.css";
-import { blueIcon, redIcon, greenIcon } from "./icons";
+import { blueIcon, redIcon, greenIcon, greyIcon } from "./icons";
 import fetchFakeData from "./fakeFetch";
-//import { myData } from "./mydata";
+import { Notifications, nb } from "./notifications";
+import { observable } from "mobx";
+import { observer } from "mobx-react-lite";
 
 useConfigureLeaflet();
 
 const radius = 40_000;
-const setOfActivities = ["Kite", "Canoe", "Bike"];
+
+const setOfActivities = [
+  { activity: "Kite", color: blueIcon },
+  { activity: "Canoe", color: greenIcon },
+  { activity: "Bike", color: redIcon },
+];
 
 const dateFormat = require("dateformat");
 
@@ -24,7 +31,9 @@ export default function Search({ Lat, Lng, zoom } = {}) {
   const [isLoading, setIsLoading] = React.useState(true);
   const [data, setData] = React.useState([]);
   const [activities, setActivities] = React.useState([]);
+  const [notif, setNotif] = React.useState([]);
 
+  // fetch the data
   React.useEffect(() => {
     fetchFakeData({
       lat: Lat,
@@ -36,8 +45,8 @@ export default function Search({ Lat, Lng, zoom } = {}) {
     });
   }, [activity, Lat, Lng]);
 
+  // mont the map
   const mapRef = React.useRef(null);
-
   React.useEffect(() => {
     mapRef.current = L.map("map", {
       center: [Lat, Lng],
@@ -54,26 +63,12 @@ export default function Search({ Lat, Lng, zoom } = {}) {
     return () => mapRef.current.remove();
   }, []);
 
+  // setup a layer above the map
   const layerRef = React.useRef(null);
   React.useEffect(() => {
     layerRef.current = new L.featureGroup().addTo(mapRef.current);
     return () => layerRef.current.remove();
   }, []);
-
-  function setContent({ feature: feature, check: check }) {
-    const input = check
-      ? `<input type="checkbox" checked }/>`
-      : `<input type="checkbox" }/>`;
-    const html =
-      `
-        <p> nb participants: ${feature.properties.id} </p>
-        <p>Date Start : ${dateFormat(
-          feature.properties.dateStart,
-          "dddd/dd/mm/yy"
-        )}</p>
-        <label>Select</label>` + input;
-    return html;
-  }
 
   const handlePopupCallback = React.useCallback(handlePopup, [
     activities,
@@ -87,10 +82,8 @@ export default function Search({ Lat, Lng, zoom } = {}) {
     const checkbox = document.body.querySelector('input[type="checkbox"]');
     if (checkbox) {
       const checkActivity = data.find((a) => a.properties.id === id);
-      console.log(checkActivity === true, checkbox.checked);
-
       if (checkbox.checked && !checkActivity.properties.ischecked) {
-        console.log(1);
+        // setNotif([...notif, { id: id, notified: false }]);
         setActivities([
           ...activities,
           {
@@ -108,7 +101,7 @@ export default function Search({ Lat, Lng, zoom } = {}) {
           return copy;
         });
       } else if (!checkbox.checked && checkActivity.properties.ischecked) {
-        console.log(2);
+        // setNotif(notif.filter((n) => n.id !== id));
         setActivities(activities.filter((a) => a.id !== id) || []);
         setData((allData) => {
           const copy = [...allData];
@@ -120,28 +113,36 @@ export default function Search({ Lat, Lng, zoom } = {}) {
     }
   }
 
+  // set the color of a marker upon the activity/color hash 'setOfActivities'
+  function selectColor(feature, latlng) {
+    return L.marker(latlng, {
+      icon: setOfActivities.find(
+        (a) => a.activity === feature.properties.activity
+      ).color,
+    });
+  }
+
+  // define the content of a popup binding to a marker
+  function setContent({ feature: feature, check: check }) {
+    const input = check
+      ? `<input type="checkbox" checked }/>`
+      : `<input type="checkbox" }/>`;
+    const html =
+      `
+        <p> nb participants: ${feature.properties.id} </p>
+        <p>Date Start : ${dateFormat(
+          feature.properties.dateStart,
+          "dddd/dd/mm/yy"
+        )}</p>
+        <label>Select</label>` + input;
+    return html;
+  }
+
   React.useEffect(() => {
     layerRef.current.clearLayers();
     L.geoJSON(data, {
       pointToLayer: function (feature, latlng) {
-        let marker = L.marker(latlng);
-        switch (feature.properties.activity) {
-          case "Bike":
-            marker = L.marker(latlng, {
-              icon: redIcon,
-            });
-            break;
-          case "Kite":
-            marker = L.marker(latlng, {
-              icon: blueIcon,
-            });
-            break;
-          default:
-            marker = L.marker(latlng, {
-              icon: greenIcon,
-            });
-        }
-        // const marker = L.marker(latlng, { icon: greenIcon });
+        const marker = selectColor(feature, latlng);
         const content = L.DomUtil.create("div");
         content.innerHTML = setContent({
           feature: feature,
@@ -158,20 +159,46 @@ export default function Search({ Lat, Lng, zoom } = {}) {
     }).addTo(layerRef.current);
   }, [data, activities, handlePopupCallback]);
 
+  // activity selector
   function handleActivityChange(e) {
     setActivity(e.target.value);
   }
 
+  // reposition a marker on map from the table
   function handleClick({
     activity: {
       geometry: { coordinates },
     },
   }) {
-    console.log(coordinates);
-    L.marker([coordinates[1], coordinates[0]], { icon: blueIcon }).addTo(
-      layerRef.current
-    );
+    const marker = L.marker([coordinates[1], coordinates[0]], {
+      icon: greyIcon,
+    });
+    marker.addTo(layerRef.current);
   }
+
+  function handleRemove(e, { act }) {
+    setActivities((allActivities) =>
+      [...allActivities].filter((activity) => activity.id !== act.id)
+    );
+    //setNotif([...notif, notif.filter((n) => n.id !== act.id)]);
+    setData((allData) => {
+      const copy = [...allData];
+      const index = copy.findIndex((f) => f.properties.id === act.id);
+      copy[index].properties.ischecked = false;
+      return copy;
+    });
+  }
+
+  function handleNotification(e, { act }) {
+    Notifications.add();
+  }
+
+  //   setNotif((Allnotif) => {
+  //     const copy = [...Allnotif].filter((n) => n.id !== act.id);
+  //     return [...copy, { id: act.id, notified: true }];
+  //   });
+  // }
+
   return (
     <>
       <SelectType activity={activity} onActivityChange={handleActivityChange} />
@@ -182,9 +209,13 @@ export default function Search({ Lat, Lng, zoom } = {}) {
           <p key={a.id}>
             {" "}
             <button onClick={() => handleClick({ activity: a })}>
-              {a.activity}, {a.id}, {a.dateStart}, contact: {a.username}
+              {a.activity}, {a.id}, {dateFormat(a.dateStart, "dddd-dd/mm/yy")},
+              contact: {a.username}
             </button>
-            <button>Remove</button>
+            <button onClick={(e) => handleRemove(e, { act: a })}>Remove</button>
+            <button onClick={(e) => handleNotification(e, { act: a })}>
+              Confirm participation?
+            </button>
           </p>
         ))}
     </>

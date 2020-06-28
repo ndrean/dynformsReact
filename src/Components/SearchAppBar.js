@@ -1,4 +1,5 @@
 import React from "react";
+import { observer } from "mobx-react-lite";
 import { fade, makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -16,6 +17,7 @@ import Link from "@material-ui/core/Link";
 import history from "./history";
 // import { ReactComponent as Logo } from "./images/kitesurfing.svg";
 import logo from "./images/kitesurfing.svg";
+import { Notifications, nb } from "./notifications";
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -81,7 +83,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SearchAppBar() {
+export const SearchAppBar = observer(() => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [navAnchorEl, setNavAnchorEl] = React.useState(null);
@@ -144,8 +146,8 @@ export default function SearchAppBar() {
       onClose={handleMobileMenuClose}
     >
       <MenuItem>
-        <IconButton aria-label="show 11 new notifications" color="inherit">
-          <Badge badgeContent={11} color="secondary">
+        <IconButton aria-label="show new notifications" color="inherit">
+          <Badge badgeContent={0} color="secondary">
             <NotificationsIcon />
           </Badge>
         </IconButton>
@@ -258,9 +260,11 @@ export default function SearchAppBar() {
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
             <IconButton aria-label="show 7 new notifications" color="inherit">
-              <Badge badgeContent={7} color="secondary">
-                <NotificationsIcon />
-              </Badge>
+              <Badge
+                badgeContent={Notifications.count}
+                color="secondary"
+              ></Badge>
+              <NotificationsIcon />
             </IconButton>
             <IconButton
               edge="end"
@@ -290,4 +294,4 @@ export default function SearchAppBar() {
       {renderMenu}
     </div>
   );
-}
+});

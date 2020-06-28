@@ -8,6 +8,13 @@ import { Geoloc } from "./Geoloc";
 import Lmap from "./MapLeaf";
 import Search from "./Search";
 
+const { Lat, Lng, zoom = 7 } = JSON.parse(
+  localStorage.getItem("localPosition")
+) || {
+  Lat: 45.2,
+  Lng: 0,
+};
+
 export const routes = [
   {
     path: "/",
@@ -84,12 +91,12 @@ export const routes = [
   {
     path: "/LMap",
     async action() {
-      const { Lat, Lng, zoom = 7 } = (await JSON.parse(
-        localStorage.getItem("localPosition")
-      )) || {
-        Lat: 45.2,
-        Lng: 0,
-      };
+      // const { Lat, Lng, zoom = 7 } = (await JSON.parse(
+      //   localStorage.getItem("localPosition")
+      // )) || {
+      //   Lat: 45.2,
+      //   Lng: 0,
+      // };
 
       return (
         <Layout>
@@ -103,12 +110,12 @@ export const routes = [
   {
     path: "/Search",
     async action() {
-      const { Lat, Lng, zoom = 7 } = (await JSON.parse(
-        localStorage.getItem("localPosition")
-      )) || {
-        Lat: 45.2,
-        Lng: 0,
-      };
+      // const { Lat, Lng, zoom = 7 } = (await JSON.parse(
+      //   localStorage.getItem("localPosition")
+      // )) || {
+      //   Lat: 45.2,
+      //   Lng: 0,
+      // };
 
       return (
         <Layout>
