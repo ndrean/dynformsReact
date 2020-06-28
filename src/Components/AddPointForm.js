@@ -17,7 +17,7 @@ export default function AddPointForm({
     root: {
       "& > *": {
         margin: theme.spacing(1),
-        width: "25ch",
+        width: "8ch",
       },
     },
   }));
@@ -35,20 +35,23 @@ export default function AddPointForm({
         id="standard-basic-lat"
         label="latitude"
         type="number"
-        value={latitude}
+        value={parseFloat(latitude).toFixed(2)}
         // onChange={onLatitudeChange}
       />
       <TextField
         id="standard-basic-lng"
         label="longitude"
         type="number"
-        value={longitude}
+        value={parseFloat(longitude).toFixed(2)}
         // onChange={onLongitudeChange}
       />
       <TextareaAutosize
         aria-label="empty textarea"
         placeholder="Empty"
         value={address}
+        rowsMin={3}
+        rowsMax={4}
+
         // onChange={onAddressChange}
       />
       <Button type="submit" variant="contained" color="primary" id="update">

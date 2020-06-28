@@ -101,7 +101,7 @@ export const routes = [
       return (
         <Layout>
           <Container>
-            <Lmap Lat={Lat} Lng={Lng} zoom={zoom} />
+            <Lmap Lat={parseFloat(Lat)} Lng={parseFloat(Lng)} zoom={zoom} />
           </Container>
         </Layout>
       );

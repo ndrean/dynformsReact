@@ -17,7 +17,7 @@ import Link from "@material-ui/core/Link";
 import history from "./history";
 // import { ReactComponent as Logo } from "./images/kitesurfing.svg";
 import logo from "./images/kitesurfing.svg";
-import { Notifications, nb } from "./notifications";
+import { Notifications } from "./notifications";
 
 const useStyles = makeStyles((theme) => ({
   grow: {

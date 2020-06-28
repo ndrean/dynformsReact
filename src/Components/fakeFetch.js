@@ -75,9 +75,9 @@ const fetchFakeData = ({ lat, lng, radius, activity }) => {
     }
   }
 
-  function distance([a, b], [c, d]) {
-    return Math.sqrt((c - a) ** 2 + (d - b) ** 2) * 111;
-  }
+  // function distance([a, b], [c, d]) {
+  //   return Math.sqrt((c - a) ** 2 + (d - b) ** 2) * 111;
+  // }
 
   return Promise.resolve(
     // {

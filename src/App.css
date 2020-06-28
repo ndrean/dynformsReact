@@ -58,7 +58,11 @@
 }
 
 #map {
-  height: 400px;
+  height: 300px;
+}
+
+#Lmap {
+  height: 300px;
 }
 
 .geocoder {

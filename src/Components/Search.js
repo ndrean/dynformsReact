@@ -1,18 +1,20 @@
 // https://cherniavskii.com/using-leaflet-in-react-apps-with-react-hooks/
 
-import React, { useEffect } from "react";
+import React from "react";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 
+//import { observable } from "mobx";
+//import { observer } from "mobx-react-lite";
+
 import useConfigureLeaflet from "./useConfigureLeaflet";
+
 import SelectType from "./SelectType";
 import Loader from "./Loader.js";
 import "../App.css";
 import { blueIcon, redIcon, greenIcon, greyIcon } from "./icons";
 import fetchFakeData from "./fakeFetch";
-import { Notifications, nb } from "./notifications";
-import { observable } from "mobx";
-import { observer } from "mobx-react-lite";
+import { Notifications } from "./notifications";
 
 useConfigureLeaflet();
 
@@ -31,7 +33,7 @@ export default function Search({ Lat, Lng, zoom } = {}) {
   const [isLoading, setIsLoading] = React.useState(true);
   const [data, setData] = React.useState([]);
   const [activities, setActivities] = React.useState([]);
-  const [notif, setNotif] = React.useState([]);
+  //const [notif, setNotif] = React.useState([]);
 
   // fetch the data
   React.useEffect(() => {
@@ -45,7 +47,7 @@ export default function Search({ Lat, Lng, zoom } = {}) {
     });
   }, [activity, Lat, Lng]);
 
-  // mont the map
+  // mount the map
   const mapRef = React.useRef(null);
   React.useEffect(() => {
     mapRef.current = L.map("map", {
@@ -60,6 +62,7 @@ export default function Search({ Lat, Lng, zoom } = {}) {
     }).on("load", () => {
       setIsLoading(false);
     });
+    L.control.scale().addTo(mapRef.current);
     return () => mapRef.current.remove();
   }, []);
 
@@ -123,7 +126,7 @@ export default function Search({ Lat, Lng, zoom } = {}) {
   }
 
   // define the content of a popup binding to a marker
-  function setContent({ feature: feature, check: check }) {
+  function setContent({ feature, check }) {
     const input = check
       ? `<input type="checkbox" checked }/>`
       : `<input type="checkbox" }/>`;
@@ -202,7 +205,9 @@ export default function Search({ Lat, Lng, zoom } = {}) {
   return (
     <>
       <SelectType activity={activity} onActivityChange={handleActivityChange} />
-      <div id="map">{isLoading && <Loader />} </div>
+      <div ref={mapRef} id="map">
+        {isLoading && <Loader />}{" "}
+      </div>
       <p>Click on the marker and select/unselect and ask to join the event:</p>
       {activities &&
         activities.map((a) => (
