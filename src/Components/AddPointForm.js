@@ -6,18 +6,15 @@ import TextareaAutosize from "@material-ui/core/TextareaAutosize";
 
 export default function AddPointForm({
   onFormSubmit,
-  // onLatitudeChange,
-  // onLongitudeChange,
-  // onAddressChange,
-  latitude,
-  longitude,
+  onDateChange,
   address,
+  date,
 }) {
   const useStyles = makeStyles((theme) => ({
     root: {
       "& > *": {
         margin: theme.spacing(1),
-        width: "8ch",
+        width: "15ch",
       },
     },
   }));
@@ -31,30 +28,33 @@ export default function AddPointForm({
       noValidate
       autoComplete="off"
     >
-      <TextField
+      {/*
+       <TextField
         id="standard-basic-lat"
         label="latitude"
-        type="number"
-        value={parseFloat(latitude).toFixed(2)}
-        // onChange={onLatitudeChange}
+        type="date"
+        value={date}
+        onChange={onDateChange}
       />
+      
       <TextField
         id="standard-basic-lng"
         label="longitude"
         type="number"
+        hidden
         value={parseFloat(longitude).toFixed(2)}
         // onChange={onLongitudeChange}
       />
       <TextareaAutosize
         aria-label="empty textarea"
         placeholder="Empty"
+        hidden
         value={address}
         rowsMin={3}
         rowsMax={4}
-        style={{ width: 150 }}
 
         // onChange={onAddressChange}
-      />
+      /> */}
       <Button type="submit" variant="contained" color="primary" id="update">
         Store point
       </Button>

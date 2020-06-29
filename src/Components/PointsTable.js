@@ -27,28 +27,28 @@ export default function PointsTable(props) {
         <Table className={classes.table} aria-label="simple table">
           <TableHead>
             <TableRow>
-              <TableCell>Address </TableCell>
-              <TableCell align="right">Coords</TableCell>
-              <TableCell align="right"></TableCell>
+              {/* <TableCell align="right">Coords</TableCell> */}
+              <TableCell align="left"></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {props.rows.map(({ address, point: { lat, lng } }, index) => (
-              <TableRow key={JSON.stringify([lat, lng])}>
+            {props.rows.map(({ id, address, point }) => (
+              <TableRow key={JSON.stringify(id)}>
                 <TableCell component="th" scope="row" align="left">
-                  {JSON.stringify(address)}
-                </TableCell>
-                <TableCell align="right">
-                  [lt:{lat}, Lg:{lng}]
-                </TableCell>
-                <TableCell align="right">
                   <Button onClick={() => props.onRowRemove(address)}>
                     <DeleteIcon fontSize="small" color="secondary" />
                     {/* <IconButton aria-label="delete" >
                       
                     </IconButton> */}
                   </Button>
+                  <button onClick={props.onPopup}>
+                    {JSON.stringify(address)}
+                  </button>
                 </TableCell>
+
+                {/* <TableCell align="right">
+                  [lt:{point.lat}, Lg:{point.lng}]
+                </TableCell> */}
               </TableRow>
             ))}
           </TableBody>

@@ -7,16 +7,24 @@ import L from "leaflet";
 //import { observable } from "mobx";
 //import { observer } from "mobx-react-lite";
 
-import useConfigureLeaflet from "./useConfigureLeaflet";
+// import useConfigureLeaflet from "./useConfigureLeaflet";
+import Button from "@material-ui/core/Button";
 
 import SelectType from "./SelectType";
 import Loader from "./Loader.js";
 import "../App.css";
-import { blueIcon, redIcon, greenIcon, greyIcon } from "./icons";
+import {
+  blueIcon,
+  redIcon,
+  greenIcon,
+  greyIcon,
+  kiteIcon,
+  canoeIcon,
+} from "./icons";
 import fetchFakeData from "./fakeFetch";
 import { Notifications } from "./notifications";
 
-useConfigureLeaflet();
+// useConfigureLeaflet();
 
 const radius = 40_000;
 
@@ -212,14 +220,24 @@ export default function Search({ Lat, Lng, zoom } = {}) {
         activities.map((a) => (
           <p key={a.id}>
             {" "}
-            <button onClick={() => handleClick({ activity: a })}>
+            <Button onClick={() => handleClick({ activity: a })}>
               {a.activity}, {a.id}, {new Date(a.dateStart).toDateString()},
               contact: {a.username}
-            </button>
-            <button onClick={(e) => handleRemove(e, { act: a })}>Remove</button>
-            <button onClick={(e) => handleNotification(e, { act: a })}>
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={(e) => handleRemove(e, { act: a })}
+            >
+              Remove
+            </Button>
+            <Button
+              variant="contained"
+              style={{ backgroundColor: "#f8bd57" }}
+              onClick={(e) => handleNotification(e, { act: a })}
+            >
               Confirm participation?
-            </button>
+            </Button>
           </p>
         ))}
     </>

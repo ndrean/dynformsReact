@@ -46,4 +46,16 @@ const greyIcon = new L.Icon({
   shadowSize: [41, 41],
 });
 
-export { redIcon, greenIcon, blueIcon, greyIcon };
+const kiteIcon = new L.Icon({
+  iconUrl: "kitesurf.svg",
+  iconSize: [25, 41],
+  // iconAnchor: [12, 41],
+  // popupAnchor: [1, -34],
+  // shadowSize: [41, 41],
+});
+
+const canoeIcon = new L.Icon({
+  iconUrl: "./images/Kayaking.svg",
+  iconSize: [25, 41],
+});
+export { redIcon, greenIcon, blueIcon, greyIcon, kiteIcon, canoeIcon };

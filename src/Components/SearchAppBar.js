@@ -259,7 +259,7 @@ export const SearchAppBar = observer(() => {
 
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
-            <IconButton aria-label="show 7 new notifications" color="inherit">
+            <IconButton aria-label="show new notifications" color="inherit">
               <Badge
                 badgeContent={Notifications.count}
                 color="secondary"
