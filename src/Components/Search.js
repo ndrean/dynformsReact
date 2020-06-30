@@ -3,7 +3,7 @@
 import React from "react";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
-
+import { observable, action } from "mobx";
 //import { observable } from "mobx";
 //import { observer } from "mobx-react-lite";
 
@@ -25,6 +25,10 @@ import fetchFakeData from "./fakeFetch";
 import { Notifications } from "./notifications";
 
 // useConfigureLeaflet();
+
+let IsChecked = observable({
+  status: false,
+});
 
 const radius = 40_000;
 
@@ -200,14 +204,12 @@ export default function Search({ Lat, Lng, zoom } = {}) {
   }
 
   function handleNotification(e, { act }) {
-    Notifications.add();
+    if (!IsChecked) {
+      Notifications.add();
+    } else {
+      Notifications.remove();
+    }
   }
-
-  //   setNotif((Allnotif) => {
-  //     const copy = [...Allnotif].filter((n) => n.id !== act.id);
-  //     return [...copy, { id: act.id, notified: true }];
-  //   });
-  // }
 
   return (
     <>
@@ -233,8 +235,13 @@ export default function Search({ Lat, Lng, zoom } = {}) {
             </Button>
             <Button
               variant="contained"
+              type="checkbox"
+              checked={IsChecked}
               style={{ backgroundColor: "#f8bd57" }}
-              onClick={(e) => handleNotification(e, { act: a })}
+              onClick={(e) => {
+                IsChecked = !IsChecked;
+                handleNotification(e, { act: a });
+              }}
             >
               Confirm participation?
             </Button>

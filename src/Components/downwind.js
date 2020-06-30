@@ -1,6 +1,7 @@
 // https://itnext.io/how-to-build-a-dynamic-controlled-form-with-react-hooks-2019-b39840f75c4f
 
 import React, { useState } from "react";
+
 import TextField from "@material-ui/core/TextField";
 import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
@@ -9,11 +10,13 @@ import Grid from "@material-ui/core/Grid";
 import TextareaAutosize from "@material-ui/core/TextareaAutosize";
 import Checkbox from "@material-ui/core/Checkbox";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
-//import CssBaseline from "#material-ui/core/CssBaseline";
-
 import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
 import PhotoCamera from "@material-ui/icons/PhotoCamera";
+
+import { observable, action } from "mobx";
+
+import { Notifications } from "./notifications";
 
 import ShowTrip from "./ShowTrip";
 //import TakePicButton from "./camera";
@@ -40,10 +43,16 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Downwind() {
+const Downwind = () => {
   const classes = useStyles();
 
-  const newKiter = { name: "", contact: "", pushed: false, file: "" };
+  const newKiter = {
+    name: "",
+    contact: "",
+    pushed: false,
+    file: "",
+  };
+
   const newTrip = { date: "", startPoint: "", endPoint: "", comment: "" };
 
   const [kiters, setKiters] = useState([newKiter]);
@@ -210,6 +219,11 @@ export default function Downwind() {
                           inputProps={{ "aria-label": "secondary checkbox" }}
                           onChange={() => {
                             [...kiters][id].pushed = ![...kiters][id].pushed;
+                            if ([...kiters][id].pushed === false) {
+                              Notifications.remove();
+                            } else if ([...kiters][id].pushed === true) {
+                              Notifications.add();
+                            }
                             setKiters([...kiters]);
                           }}
                         />
@@ -308,4 +322,6 @@ export default function Downwind() {
       </div>
     </>
   );
-}
+};
+
+export default Downwind;
