@@ -11,12 +11,23 @@ import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
 // import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from "@material-ui/icons/Delete";
+import Modal from "@material-ui/core/Modal";
+import List from "@material-ui/core/List";
+import { ListItem } from "@material-ui/core";
 
-const useStyles = makeStyles({
-  table: {
-    minWidth: 650,
+const useStyles = makeStyles((theme) => ({
+  paper: {
+    position: "absolute",
+    width: 100,
+    backgroundColor: theme.palette.background.paper,
+    border: "2px solid #000",
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(2, 4, 3),
   },
-});
+  table: {
+    minWidth: 350,
+  },
+}));
 
 export default function PointsTable(props) {
   const classes = useStyles();
@@ -32,25 +43,66 @@ export default function PointsTable(props) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {props.rows.map(({ id, address, point }) => (
-              <TableRow key={JSON.stringify(id)}>
-                <TableCell component="th" scope="row" align="left">
-                  <Button onClick={() => props.onRowRemove(address)}>
-                    <DeleteIcon fontSize="small" color="secondary" />
-                    {/* <IconButton aria-label="delete" >
+            {props.rows &&
+              props.rows.map((row, idx) => (
+                <TableRow key={idx}>
+                  <TableCell component="th" scope="row" align="left">
+                    <Button onClick={() => props.onRowRemove(row.address)}>
+                      <DeleteIcon fontSize="small" color="secondary" />
+                      {/* <IconButton aria-label="delete" >
                       
                     </IconButton> */}
-                  </Button>
-                  <button onClick={props.onPopup}>
-                    {JSON.stringify(address)}
-                  </button>
-                </TableCell>
+                    </Button>
+                    <div>
+                      <Button
+                        variant="contained"
+                        onClick={() => props.onShowOnMap(row.point)}
+                      >
+                        {JSON.stringify(row.address)}
+                      </Button>
+                      <Button
+                        variant="contained"
+                        onClick={() => props.onhandleOpen(row.point)}
+                      >
+                        {row.position}
+                      </Button>
 
-                {/* <TableCell align="right">
-                  [lt:{point.lat}, Lg:{point.lng}]
-                </TableCell> */}
-              </TableRow>
-            ))}
+                      <Modal
+                        className={classes.modal}
+                        open={props.open}
+                        onClose={props.onhandleModalClose}
+                        aria-labelledby="simple-modal-title"
+                        aria-describedby="simple-modal-description"
+                      >
+                        <div style={props.modalStyle} className={classes.paper}>
+                          <h5 id="simple-modal-title">Assign position</h5>
+                          <List
+                            component="nav"
+                            aria-label="main mailbox folders"
+                            onClick={props.onhandleSelect}
+                          >
+                            <ListItem name="Start" button>
+                              Start point
+                            </ListItem>
+                            <ListItem button name="End">
+                              End point
+                            </ListItem>
+                            <ListItem button name="Other">
+                              Other point
+                            </ListItem>
+                          </List>
+                          <Button
+                            type="submit"
+                            onClick={props.onhandleModalClose}
+                          >
+                            Save
+                          </Button>
+                        </div>
+                      </Modal>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
           </TableBody>
         </Table>
       </TableContainer>

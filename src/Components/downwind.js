@@ -14,7 +14,7 @@ import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
 import PhotoCamera from "@material-ui/icons/PhotoCamera";
 
-import { observable, action } from "mobx";
+//import { observable, action } from "mobx";
 
 import { Notifications } from "./notifications";
 

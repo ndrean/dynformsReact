@@ -17,7 +17,7 @@ const Notifications = observable({
   },
 });
 
-global.nb = nb;
-global.Notifications = Notifications;
+//global.nb = nb;
+//global.Notifications = Notifications; //=> visible in the consolz
 
-export { Notifications, nb };
+export { Notifications };

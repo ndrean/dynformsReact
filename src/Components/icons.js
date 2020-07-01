@@ -46,6 +46,17 @@ const greyIcon = new L.Icon({
   shadowSize: [41, 41],
 });
 
+const violetIcon = new L.Icon({
+  iconUrl:
+    "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-violet.png",
+  shadowUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41],
+});
+
 const kiteIcon = new L.Icon({
   iconUrl: "kitesurf.svg",
   iconSize: [25, 41],
@@ -58,4 +69,12 @@ const canoeIcon = new L.Icon({
   iconUrl: "./images/Kayaking.svg",
   iconSize: [25, 41],
 });
-export { redIcon, greenIcon, blueIcon, greyIcon, kiteIcon, canoeIcon };
+export {
+  redIcon,
+  greenIcon,
+  blueIcon,
+  greyIcon,
+  violetIcon,
+  kiteIcon,
+  canoeIcon,
+};

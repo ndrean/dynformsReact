@@ -13,6 +13,7 @@
     "@turf/buffer": "^5.1.5",
     "@turf/collect": "^6.0.1",
     "browserify": "^16.5.1",
+    "clsx": "^1.1.1",
     "dateformat": "^3.0.3",
     "esri-leaflet": "^2.4.1",
     "esri-leaflet-geocoder": "^2.3.3",

@@ -49,3 +49,11 @@
   margin: 12px auto;
   font-size: 17px;
 }
+
+.btn-orange {
+  background-color: "#f8bd57"
+}
+
+.btn-green:checked {
+  background-color: "#61ABA2"
+}

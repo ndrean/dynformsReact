@@ -6,7 +6,7 @@ import { ReactComponent as Logo } from "./images/kitesurfing.svg";
 import Downwind from "./Downwind";
 import { Geoloc } from "./Geoloc";
 import Lmap from "./MapLeaf";
-import Search from "./Search";
+import { Search } from "./Search";
 
 const { Lat, Lng, zoom = 7 } = JSON.parse(
   localStorage.getItem("localPosition")

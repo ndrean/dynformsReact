@@ -1,14 +1,24 @@
 // https://cherniavskii.com/using-leaflet-in-react-apps-with-react-hooks/
+//https:blog.logrocket.com/how-to-use-react-leaflet/
 
 import React from "react";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
-import { observable, action } from "mobx";
+import { observable } from "mobx";
+import { observer } from "mobx-react-lite";
 //import { observable } from "mobx";
 //import { observer } from "mobx-react-lite";
 
 // import useConfigureLeaflet from "./useConfigureLeaflet";
+import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
+import FormGroup from "@material-ui/core/FormGroup";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Checkbox from "@material-ui/core/Checkbox";
+// import { makeStyles } from "@material-ui/core/styles";
+// import Modal from "@material-ui/core/Modal";
+// import List from "@material-ui/core/List";
+// import { ListItem } from "@material-ui/core";
 
 import SelectType from "./SelectType";
 import Loader from "./Loader.js";
@@ -21,14 +31,11 @@ import {
   kiteIcon,
   canoeIcon,
 } from "./icons";
+
 import fetchFakeData from "./fakeFetch";
 import { Notifications } from "./notifications";
 
-// useConfigureLeaflet();
-
-let IsChecked = observable({
-  status: false,
-});
+let IsChecked = observable.box("false");
 
 const radius = 40_000;
 
@@ -38,14 +45,11 @@ const setOfActivities = [
   { activity: "Bike", color: redIcon },
 ];
 
-//const dateFormat = require("dateformat");
-
-export default function Search({ Lat, Lng, zoom } = {}) {
+export const Search = observer(function Search({ Lat, Lng, zoom } = {}) {
   const [activity, setActivity] = React.useState("Kite");
   const [isLoading, setIsLoading] = React.useState(true);
   const [data, setData] = React.useState([]);
   const [activities, setActivities] = React.useState([]);
-  //const [notif, setNotif] = React.useState([]);
 
   // fetch the data
   React.useEffect(() => {
@@ -201,6 +205,7 @@ export default function Search({ Lat, Lng, zoom } = {}) {
       copy[index].properties.ischecked = false;
       return copy;
     });
+    Notifications.remove();
   }
 
   function handleNotification(e, { act }) {
@@ -220,33 +225,58 @@ export default function Search({ Lat, Lng, zoom } = {}) {
       <p>Click on the marker and select/unselect and ask to join the event:</p>
       {activities &&
         activities.map((a) => (
-          <p key={a.id}>
+          <div key={a.id}>
             {" "}
-            <Button onClick={() => handleClick({ activity: a })}>
-              {a.activity}, {a.id}, {new Date(a.dateStart).toDateString()},
-              contact: {a.username}
-            </Button>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={(e) => handleRemove(e, { act: a })}
-            >
-              Remove
-            </Button>
-            <Button
-              variant="contained"
-              type="checkbox"
-              checked={IsChecked}
-              style={{ backgroundColor: "#f8bd57" }}
-              onClick={(e) => {
-                IsChecked = !IsChecked;
-                handleNotification(e, { act: a });
-              }}
-            >
-              Confirm participation?
-            </Button>
-          </p>
+            <Grid container spacing={1}>
+              <Grid item xs={12}>
+                <Button
+                  variant="contained"
+                  onClick={() => handleClick({ activity: a })}
+                >
+                  {a.activity}, {a.id}, {new Date(a.dateStart).toDateString()},
+                  contact: {a.username}
+                </Button>
+              </Grid>
+              <Grid item xs={4}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={(e) => handleRemove(e, { act: a })}
+                >
+                  Remove
+                </Button>
+              </Grid>
+              <Grid item xs={8}>
+                <FormGroup row>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        onChange={(e) => {
+                          IsChecked = !IsChecked;
+                          handleNotification(e, { act: a });
+                        }}
+                        color="primary"
+                      />
+                    }
+                    label="Confirm participation?"
+                    labelPlacement="start"
+                  />
+                </FormGroup>
+              </Grid>
+            </Grid>
+          </div>
         ))}
     </>
   );
-}
+});
+
+// <Checkbox
+//   variant="contained"
+//   //checked={IsChecked.toString()}
+//   onClick={(e) => {
+//     IsChecked = !IsChecked;
+//     handleNotification(e, { act: a });
+//   }}
+// >
+//   Confirm participation?
+// </Checkbox>
